@@ -1,0 +1,10 @@
+Business: 11481
+userTable: 192999
+reviewTable: 416479
+FriendsTable: 1052706
+categories: 226
+BusinessCategories: 33619
+CheckIn: 67407
+Hours: 55502
+Attributes: 81
+BusinessAttributes: 227536

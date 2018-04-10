@@ -35,7 +35,7 @@ def insert2BusinessTable():
         #connect to yelpdb database on postgres server using psycopg2
         #TODO: update the database name, username, and password
         try:
-            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='Khan1992'")
+            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='madera111'")
         except:
             print('Unable to connect to the database!')
         cur = conn.cursor()
@@ -90,7 +90,7 @@ def insert2UserTable():
         count_line = 0
 
         try:
-            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='Khan1992'")
+            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='madera111'")
         except:
             print('Unable to connect to the database!')
         cur = conn.cursor()
@@ -135,7 +135,7 @@ def insert2ReviewTable():
         count_line = 0
 
         try:
-            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='Khan1992'")
+            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='madera111'")
         except:
             print('Unable to connect to the database!')
         cur = conn.cursor()
@@ -181,7 +181,7 @@ def insert2FriendsTable():
         count_line = 0
 
         try:
-            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='Khan1992'")
+            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='madera111'")
         except:
             print('Unable to connect to the database!')
         cur = conn.cursor()
@@ -221,7 +221,7 @@ def insert2CategoriesTable():
         #connect to yelpdb database on postgres server using psycopg2
         #TODO: update the database name, username, and password
         try:
-            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='Khan1992'")
+            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='madera111'")
         except:
             print('Unable to connect to the database!')
         cur = conn.cursor()
@@ -265,7 +265,7 @@ def insert2BusinessCategoriesTable():
         #connect to yelpdb database on postgres server using psycopg2
         #TODO: update the database name, username, and password
         try:
-            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='Khan1992'")
+            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='madera111'")
         except:
             print('Unable to connect to the database!')
         cur = conn.cursor()
@@ -311,7 +311,7 @@ def insert2CheckinTable():
         #connect to yelpdb database on postgres server using psycopg2
         #TODO: update the database name, username, and password
         try:
-            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='Khan1992'")
+            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='madera111'")
         except:
             print('Unable to connect to the database!')
         cur = conn.cursor()
@@ -381,7 +381,7 @@ def insert2AttributeTable():
         #connect to yelpdb database on postgres server using psycopg2
         #TODO: update the database name, username, and password
         try:
-            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='Khan1992'")
+            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='madera111'")
         except:
             print('Unable to connect to the database!')
         cur = conn.cursor()
@@ -441,7 +441,7 @@ def insert2BusinessAttributeTable():
         #connect to yelpdb database on postgres server using psycopg2
         #TODO: update the database name, username, and password
         try:
-            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='Khan1992'")
+            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='madera111'")
         except:
             print('Unable to connect to the database!')
         cur = conn.cursor()
@@ -507,7 +507,7 @@ def insert2BusinessHoursTable():
         #connect to yelpdb database on postgres server using psycopg2
         #TODO: update the database name, username, and password
         try:
-            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='Khan1992'")
+            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='madera111'")
         except:
             print('Unable to connect to the database!')
         cur = conn.cursor()
@@ -548,7 +548,7 @@ def insert2BusinessHoursTable():
 #insert2ReviewTable()
 #insert2FriendsTable()
 #insert2BusinessCategoriesTable()
-insert2CheckinTable()
-#insert2AttributeTable()
+#insert2CheckinTable()
+insert2AttributeTable()
 #insert2BusinessAttributeTable()
 #insert2BusinessHoursTable()

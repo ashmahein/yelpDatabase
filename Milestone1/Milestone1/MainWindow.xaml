@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Yelp" Height="740" Width="1058" FontSize="16">
     <Grid>
-        <TabControl Margin="0" BorderBrush="Gainsboro">
+        <TabControl Margin="2,0,-1.8,0.4" BorderBrush="Gainsboro" SelectionChanged="TabControl_SelectionChanged">
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
@@ -123,7 +123,29 @@
                     </GroupBox>
                 </Grid>
             </TabItem>
-            <TabItem Header="User Information" />
+            <TabItem Header="User Information" >
+                <Grid>
+                    <GroupBox Name="CurrentUserGroupUser" Header="Set Current User" HorizontalAlignment="Left" Margin="5,0,0,0" Width="350" Height="110" VerticalAlignment="Top" BorderThickness="2">
+                        <Grid Margin="0,0,-0.4,-18.4">
+                            <TextBox HorizontalAlignment="Left" Height="25" Margin="2,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="140" BorderThickness="2"/>
+                            <ListBox HorizontalAlignment="Left" Height="39" Margin="2,33,0,0" VerticalAlignment="Top" Width="326" BorderThickness="2"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Name="UserInfoGroupUser" Header="User Information" HorizontalAlignment="Center" Margin="360,0,235.6,0" Width="450" Height="110" VerticalAlignment="Top" BorderThickness="2">
+                        <Grid>
+                            <Label x:Name="nameLabel" Content="Name" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="37" FontSize="9" RenderTransformOrigin="0.649,-0.762" Margin="0,-4,0,65.6"/>
+                            <Label x:Name="starLabel" Content="Star" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="37" FontSize="9" RenderTransformOrigin="0.649,-0.762" Margin="0,16,0,45.6"/>
+                            <Label x:Name="fansLabel" Content="Fans" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="37" FontSize="9" RenderTransformOrigin="0.649,-0.762" Margin="0,36,0,25.6"/>
+                            <Label x:Name="yelpingSinceLabel" Content="Yelping Since" HorizontalAlignment="Left" Height="26" VerticalAlignment="Center" Width="62" FontSize="9" RenderTransformOrigin="0.649,-0.762" Margin="0,56,0,-0.4"/>
+                            <TextBox HorizontalAlignment="Left" Height="11" Margin="71,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="74" FontSize="8.5"/>
+                            <TextBox HorizontalAlignment="Left" Height="11" Margin="71,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="74" FontSize="8.5"/>
+                            <TextBox HorizontalAlignment="Left" Height="11" Margin="71,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="74" FontSize="8.5"/>
+                            <TextBox HorizontalAlignment="Left" Height="11" Margin="71,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="74" FontSize="8.5"/>
+
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>

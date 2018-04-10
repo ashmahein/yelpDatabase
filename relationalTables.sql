@@ -69,10 +69,10 @@ CREATE TABLE BusinessCategories (
 CREATE TABLE CheckIn (
     busID VARCHAR(30),
     DayOfWeek VARCHAR(10),
-    morning CHAR(30),
-    afternoon CHAR(30),
-    evening CHAR(30),
-    night CHAR(30),
+    morning INTEGER,
+    afternoon INTEGER,
+    evening INTEGER,
+    night INTEGER,
     PRIMARY KEY (busID, DayOfWeek),
     FOREIGN KEY (busID) REFERENCES Business(busID)
 );

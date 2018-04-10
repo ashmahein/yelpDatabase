@@ -131,17 +131,24 @@
                             <ListBox HorizontalAlignment="Left" Height="39" Margin="2,33,0,0" VerticalAlignment="Top" Width="326" BorderThickness="2"/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Name="UserInfoGroupUser" Header="User Information" HorizontalAlignment="Center" Margin="360,0,235.6,0" Width="450" Height="110" VerticalAlignment="Top" BorderThickness="2">
+                    <GroupBox Name="UserInfoGroupUser" Header="User Information" HorizontalAlignment="Center" Margin="360,0,285.6,0" Width="400" Height="110" VerticalAlignment="Top" BorderThickness="2">
                         <Grid>
                             <Label x:Name="nameLabel" Content="Name" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="37" FontSize="9" RenderTransformOrigin="0.649,-0.762" Margin="0,-4,0,65.6"/>
                             <Label x:Name="starLabel" Content="Star" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="37" FontSize="9" RenderTransformOrigin="0.649,-0.762" Margin="0,16,0,45.6"/>
                             <Label x:Name="fansLabel" Content="Fans" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="37" FontSize="9" RenderTransformOrigin="0.649,-0.762" Margin="0,36,0,25.6"/>
                             <Label x:Name="yelpingSinceLabel" Content="Yelping Since" HorizontalAlignment="Left" Height="26" VerticalAlignment="Center" Width="62" FontSize="9" RenderTransformOrigin="0.649,-0.762" Margin="0,56,0,-0.4"/>
-                            <TextBox HorizontalAlignment="Left" Height="11" Margin="71,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="74" FontSize="8.5"/>
-                            <TextBox HorizontalAlignment="Left" Height="11" Margin="71,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="74" FontSize="8.5"/>
-                            <TextBox HorizontalAlignment="Left" Height="11" Margin="71,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="74" FontSize="8.5"/>
-                            <TextBox HorizontalAlignment="Left" Height="11" Margin="71,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="74" FontSize="8.5"/>
-
+                            <TextBox HorizontalAlignment="Left" Height="15" Margin="71,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="108" FontSize="8.5"/>
+                            <TextBox HorizontalAlignment="Left" Height="15" Margin="71,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="108" FontSize="8.5"/>
+                            <TextBox HorizontalAlignment="Left" Height="16" Margin="71,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="108" FontSize="8.5"/>
+                            <TextBox HorizontalAlignment="Left" Height="15" Margin="71,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="108" FontSize="8.5"/>
+                            <Label x:Name="votesLabel" Content="Votes:" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="37" FontSize="9" RenderTransformOrigin="0.649,-0.762" Margin="205,-4,0,65.6"/>
+                            <Label x:Name="funnyLabel" Content="Funny" HorizontalAlignment="Left" Height="24" VerticalAlignment="Center" Width="37" FontSize="9" RenderTransformOrigin="0.649,-0.762" Margin="205,16,0,41.6"/>
+                            <Label x:Name="coolLabel" Content="Cool" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="37" FontSize="9" RenderTransformOrigin="0.649,-0.762" Margin="205,36,0,25.6"/>
+                            <Label x:Name="usefulLabel" Content="Useful" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="37" FontSize="9" RenderTransformOrigin="0.649,-0.762" Margin="205,56,0,5.6"/>
+                            <TextBox HorizontalAlignment="Left" Height="15" Margin="242,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="108" FontSize="8.5"/>
+                            <TextBox HorizontalAlignment="Left" Height="15" Margin="242,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="108" FontSize="8.5"/>
+                            <TextBox HorizontalAlignment="Left" Height="15" Margin="242,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="108" FontSize="8.5"/>
+                            <TextBox HorizontalAlignment="Left" Height="15" Margin="242,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="108" FontSize="8.5"/>
                         </Grid>
                     </GroupBox>
                 </Grid>

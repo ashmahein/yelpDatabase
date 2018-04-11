@@ -16,7 +16,6 @@ using Npgsql;
 
 namespace Milestone1
 {
-
     public class business
     {
         public String name { get; set; }
@@ -27,6 +26,14 @@ namespace Milestone1
         public int reviewCount { get; set; }
         public Double reviewRating { get; set; }
         public int numCheckins { get; set; }
+    }
+    
+    public class user
+    {
+        public String Uname { get; set; }
+        public Double avgStar { get; set; }
+        public int yelpingSince { get; set; }
+        public String text { get; set; }
     }
 
     /// <summary>
@@ -67,8 +74,6 @@ namespace Milestone1
             }
 
         }
-
-
 
         public void addColumns()
         {
@@ -114,6 +119,34 @@ namespace Milestone1
             CheckinCol.Binding = new Binding("numCheckins");
             displayGrid.Columns.Add(CheckinCol);
 
+            DataGridTextColumn friendNameCol = new DataGridTextColumn();
+            friendNameCol.Header = "Name";
+            friendNameCol.Binding = new Binding("Uname");
+            friendNameCol.Width = 150;
+            displayGrid.Columns.Add(friendNameCol);
+
+            DataGridTextColumn avgStarCol = new DataGridTextColumn();
+            avgStarCol.Header = "Avg Star";
+            avgStarCol.Binding = new Binding("avgStar");
+            avgStarCol.Width = 150;
+            displayGrid.Columns.Add(avgStarCol);
+
+            DataGridTextColumn yelpingSinceCol = new DataGridTextColumn();
+            yelpingSinceCol.Header = "Yelping Since";
+            yelpingSinceCol.Binding = new Binding("yelpingSince");
+            yelpingSinceCol.Width = 150;
+            displayGrid.Columns.Add(yelpingSinceCol);
+
+            DataGridTextColumn userNameCol = new DataGridTextColumn();
+            userNameCol.Header = "User Name";
+            userNameCol.Binding = new Binding("Uname");
+            userNameCol.Width = 150;
+            displayGrid.Columns.Add(userNameCol);
+
+            DataGridTextColumn textCol = new DataGridTextColumn();
+            textCol.Header = "Text";
+            textCol.Binding = new Binding("text");
+            displayGrid.Columns.Add(textCol);
         }
 
         private void stateComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -287,6 +320,11 @@ namespace Milestone1
         }
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
         }

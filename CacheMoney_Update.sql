@@ -18,8 +18,8 @@ WHERE business.busid = reviewtable.busid);
 CREATE OR REPLACE FUNCTION increaseCheckIn() Returns Trigger AS'
 Begin
 	UPDATE business
-	SET business.numcheckins = business.numcheckins + 1
-	WHERE business.busid = checkin.busid;
+        SET numcheckins = OLD.numcheckins + 1
+        WHERE busid = NEW.busid;
     RETURN NEW;
 END
 ' Language plpgsql;
@@ -33,16 +33,16 @@ EXECUTE PROCEDURE increaseCheckIn();
 CREATE OR REPLACE FUNCTION updateReviewRating() Returns Trigger AS'
 Begin
 	 UPDATE business
-     SET business.reviewratings = (SELECT SUM(stars) FROM reviewtable
-     WHERE business.busid = reviewtable.busid) /
-     (SELECT COUNT (*) FROM reviewtable
-     WHERE business.busid = reviewtable.busid);
+     	SET business.reviewratings = (SELECT SUM(stars) FROM reviewtable
+         WHERE business.busid = reviewtable.busid) /
+         (SELECT COUNT (*) FROM reviewtable
+         WHERE business.busid = reviewtable.busid);
      RETURN NEW;
 END
 ' Language plpgsql;
 
  
-CREATE TRIGGER reviewcountTrigger
+CREATE TRIGGER reviewRatingTrigger
 AFTER UPDATE OF stars ON reviewtable
 FOR EACH ROW
 EXECUTE PROCEDURE updateReviewRating();
@@ -50,9 +50,9 @@ EXECUTE PROCEDURE updateReviewRating();
 CREATE OR REPLACE FUNCTION updateReviewCount() Returns Trigger AS'
 Begin
 	UPDATE business
-    SET business.reviewcount =
-    (SELECT COUNT (*) FROM reviewtable
-    WHERE business.busid = reviewtable.busid);
+        SET business.reviewcount =
+        (SELECT COUNT (*) FROM reviewtable
+        WHERE business.busid = reviewtable.busid);
     RETURN NEW;
 END
 ' Language plpgsql;

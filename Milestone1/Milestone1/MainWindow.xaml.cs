@@ -16,25 +16,6 @@ using Npgsql;
 
 namespace Milestone1
 {
-    public class business
-    {
-        public String name { get; set; }
-        public String address { get; set; }
-        public String state { get; set; }
-        public String city { get; set; }
-        public Double Stars { get; set; }
-        public int reviewCount { get; set; }
-        public Double reviewRating { get; set; }
-        public int numCheckins { get; set; }
-    }
-    
-    public class user
-    {
-        public String Uname { get; set; }
-        public Double avgStar { get; set; }
-        public int yelpingSince { get; set; }
-        public String text { get; set; }
-    }
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -50,7 +31,7 @@ namespace Milestone1
 
         private string connectionString()
         {
-            return "Host=localhost; Username=postgres; Password=madera111; Database=yelpdb";
+            return "Host=localhost; Username=postgres; Password=Khan1992; Database=yelpdb";
         }
 
         public void addStates()
@@ -77,6 +58,7 @@ namespace Milestone1
 
         public void addColumns()
         {
+            //---------------Business Grid---------//
             DataGridTextColumn businessNameCol = new DataGridTextColumn();
             businessNameCol.Header = "Business Name";
             businessNameCol.Binding = new Binding("name");
@@ -118,35 +100,57 @@ namespace Milestone1
             CheckinCol.Header = "Total Checkins";
             CheckinCol.Binding = new Binding("numCheckins");
             displayGrid.Columns.Add(CheckinCol);
+            //----------------------Friend data grid columns------------------//
 
             DataGridTextColumn friendNameCol = new DataGridTextColumn();
             friendNameCol.Header = "Name";
             friendNameCol.Binding = new Binding("Uname");
-            friendNameCol.Width = 150;
-            displayGrid.Columns.Add(friendNameCol);
+            friendNameCol.Width = 100;
+            friendDataGrid.Columns.Add(friendNameCol);
 
             DataGridTextColumn avgStarCol = new DataGridTextColumn();
             avgStarCol.Header = "Avg Star";
-            avgStarCol.Binding = new Binding("avgStar");
-            avgStarCol.Width = 150;
-            displayGrid.Columns.Add(avgStarCol);
+            avgStarCol.Binding = new Binding("avgStars");
+            friendDataGrid.Columns.Add(avgStarCol);
 
             DataGridTextColumn yelpingSinceCol = new DataGridTextColumn();
             yelpingSinceCol.Header = "Yelping Since";
             yelpingSinceCol.Binding = new Binding("yelpingSince");
-            yelpingSinceCol.Width = 150;
-            displayGrid.Columns.Add(yelpingSinceCol);
+            friendDataGrid.Columns.Add(yelpingSinceCol);
+
+            DataGridTextColumn fansCol = new DataGridTextColumn();
+            fansCol.Header = "Fans";
+            fansCol.Binding = new Binding("fans");
+            friendDataGrid.Columns.Add(fansCol);
+
+            DataGridTextColumn reviewCountCol = new DataGridTextColumn();
+            reviewCountCol.Header = "Votes";
+            reviewCountCol.Binding = new Binding("votes");
+            friendDataGrid.Columns.Add(reviewCountCol);
+
+            //--------------------Review Data Grid---------------//
 
             DataGridTextColumn userNameCol = new DataGridTextColumn();
             userNameCol.Header = "User Name";
             userNameCol.Binding = new Binding("Uname");
             userNameCol.Width = 150;
-            displayGrid.Columns.Add(userNameCol);
+            reviewDataGrid.Columns.Add(userNameCol);
+
+            DataGridTextColumn businessCol = new DataGridTextColumn();
+            businessCol.Header = "Business";
+            businessCol.Binding = new Binding("Business");
+            businessCol.Width = 150;
+            reviewDataGrid.Columns.Add(businessCol);
+
+            DataGridTextColumn cCol = new DataGridTextColumn();
+            cCol.Header = "City";
+            cCol.Binding = new Binding("city");
+            reviewDataGrid.Columns.Add(cCol);
 
             DataGridTextColumn textCol = new DataGridTextColumn();
             textCol.Header = "Text";
             textCol.Binding = new Binding("text");
-            displayGrid.Columns.Add(textCol);
+            reviewDataGrid.Columns.Add(textCol);
         }
 
         private void stateComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -210,6 +214,7 @@ namespace Milestone1
 
             }
         }
+
         private void zipCodeListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             displayGrid.Items.Clear();
@@ -246,7 +251,7 @@ namespace Milestone1
                     using (var cmd = new NpgsqlCommand())
                     {
                         cmd.Connection = connection;
-                        cmd.CommandText = "SELECT DISTINCT cname FROM businessCategories as bc,Business as b WHERE bc.busID=b.busID and b.postalcode='"+
+                        cmd.CommandText = "SELECT DISTINCT cname FROM businessCategories as bc,Business as b WHERE bc.busID=b.busID and b.postalcode='" +
                                            zipCodeListBox.SelectedItem.ToString() + "'; ";
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -278,9 +283,9 @@ namespace Milestone1
                         cmd.Connection = connection;
                         cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins" +
                             " FROM business, businessCategories WHERE business.BusID=businessCategories.BusID AND city = '" +
-                            cityListBox.SelectedItem.ToString() + 
+                            cityListBox.SelectedItem.ToString() +
                             "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
-                            "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() + 
+                            "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() +
                             "' AND cname = '" + CategoryListBox.SelectedItem.ToString() + "'; ";
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -314,17 +319,132 @@ namespace Milestone1
 
         }
 
-        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
 
+        private void currentUserTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                if (currentUserTextBox.Text == "")
+                {
+                    userIdsListBox.Items.Clear();
+                    return;
+                }
+
+                try
+                {
+                    using (var connection = new NpgsqlConnection(connectionString()))
+                    {
+                        connection.Open();
+                        using (var cmd = new NpgsqlCommand())
+                        {
+                            cmd.Connection = connection;
+                            cmd.CommandText = "SELECT userID FROM userTable WHERE uname LIKE '" + currentUserTextBox.Text.ToString() + "%'";
+                            using (var reader = cmd.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    userIdsListBox.Items.Add(reader.GetString(0).ToString());
+                                }
+                            }
+                        }
+                        connection.Close();
+                    }
+                }
+                catch (NullReferenceException ex)
+                {
+
+                }
+            }
         }
 
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void userIdsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            friendDataGrid.Items.Clear();
+            reviewDataGrid.Items.Clear();
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionString()))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+                        cmd.CommandText = "SELECT Uname,stars,fans,yelpingsince,u.funny,u.useful,u.cool" +
+                            " FROM userTable as u, reviewTable as r WHERE u.userID=r.userID AND u.userID = '" +
+                            userIdsListBox.SelectedItem.ToString() + "'; ";
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                nameTextBox.Text = reader.GetString(0);
+                                starTextBox.Text = reader.GetDouble(1).ToString();
+                                fansTextBox.Text = reader.GetDouble(2).ToString();
+                                yelpingTextBox.Text = reader.GetDate(3).ToString();
+                                funnyTextBox.Text = reader.GetDouble(4).ToString();
+                                usefulTextBox.Text = reader.GetDouble(5).ToString();
+                                coolTextBox.Text = reader.GetDouble(6).ToString();
+                            }
+                        }
 
+                    }
+                    //populating friends table
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+                        cmd.CommandText = "SELECT uname,avgstar,yelpingSince,fans,(cool + funny + useful) as votes" +
+                            " FROM userTable as u" +
+                            " WHERE u.userID in (SELECT f.friendID FROM friendsTable as f WHERE f.userID='" +
+                            userIdsListBox.SelectedItem.ToString() + "'); ";
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                friendDataGrid.Items.Add(new Friends()
+                                {
+                                    Uname = reader.GetString(0),
+                                    avgStars = reader.GetDouble(1),
+                                    yelpingSince = reader.GetDate(2).ToString(),
+                                    fans = reader.GetDouble(3),
+                                    votes = reader.GetDouble(4)
+
+                                });
+                            }
+                        }
+
+                    }
+                    //Populating review Table
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+                        cmd.CommandText = "SELECT uname, Bname, city, text" +
+                            " FROM userTable as u, Business as b, reviewTable as r" +
+                            " WHERE u.userID=r.userID AND b.busID=r.busID AND u.userID in" +
+                            " (SELECT f.friendID FROM friendsTable as f WHERE f.userID='" +
+                            userIdsListBox.SelectedItem.ToString() + "') ORDER BY yelpingSince DESC; ";
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                reviewDataGrid.Items.Add(new FriendReviews()
+                                {
+                                    Uname = reader.GetString(0),
+                                    Business = reader.GetString(1),
+                                    City = reader.GetString(2),
+                                    text = reader.GetString(3)
+
+                                });
+                            }
+                        }
+
+                    }
+                    connection.Close();
+                }
+            }
+            catch (NullReferenceException){}
+            catch (InvalidOperationException) { }
         }
 
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void removeFriend_Click(object sender, RoutedEventArgs e)
         {
 
         }

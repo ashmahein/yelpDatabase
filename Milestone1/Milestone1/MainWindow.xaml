@@ -45,9 +45,9 @@
                             <ListBox Name="zipCodeListBox" HorizontalAlignment="Center" Height="88" VerticalAlignment="Top" Width="185" Margin="10,167,6,0" SelectionChanged="zipCodeListBox_SelectionChanged" FontSize="12"/>
                             <ListBox x:Name="CategoryListBox" HorizontalAlignment="Center" Height="170" Margin="8,281,8,0" VerticalAlignment="Top" Width="185" SelectionChanged="CategoryListBox_SelectionChanged" FontSize="12"/>
                             <Label Name="businessCategory"  Content="Business Category" HorizontalAlignment="Left" Margin="0,255,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.417,-0.008" FontSize="12"/>
-                            <Button Name="addButton" Content="Add" HorizontalAlignment="Left" Margin="10,456,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.417,-0.008" FontSize="12" Width="80"/>
-                            <Button Name="removeButton" Content="Remove" HorizontalAlignment="Left" Margin="111,456,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.417,-0.008" FontSize="12" Width="80"/>
-                            <ListBox x:Name="SelectedCategories" HorizontalAlignment="Center" Height="114" Margin="9,481,9,0" VerticalAlignment="Top" Width="183" SelectionChanged="CategoryListBox_SelectionChanged" FontSize="12"/>
+                            <Button Name="addButton" Content="Add" HorizontalAlignment="Left" Margin="10,456,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.417,-0.008" FontSize="12" Width="80" Click="addButton_Click"/>
+                            <Button Name="removeButton" Content="Remove" HorizontalAlignment="Left" Margin="111,456,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.417,-0.008" FontSize="12" Width="80" Click="removeButton_Click"/>
+                            <ListBox x:Name="SelectedCategories" HorizontalAlignment="Center" Height="114" Margin="9,481,9,0" VerticalAlignment="Top" Width="183" FontSize="12" SelectionChanged="SelectedCategories_SelectionChanged"/>
                             <Button Name="searchButton" Content="Search Business" HorizontalAlignment="Center" Margin="9,600,9,0" VerticalAlignment="Top" RenderTransformOrigin="0.417,-0.008" FontSize="12" Width="183" Click="searchButton_Click"/>
                         </Grid>
                     </GroupBox>

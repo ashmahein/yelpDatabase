@@ -302,10 +302,18 @@ namespace Milestone1
             removeButton.IsEnabled = false;
         }
 
+        //public static string RemoveLast(this string text, string character)
+        //{
+        //    if (text.Length < 1) return text;
+        //    return text.Remove(text.ToString().LastIndexOf(character), character.Length);
+        //}
+
         private void searchButton_Click(object sender, RoutedEventArgs e)
         {
             int count = 0;
+            int countCategories = 0;
             displayGrid.Items.Clear();
+            StringBuilder sb = new StringBuilder();
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString()))
@@ -318,34 +326,18 @@ namespace Milestone1
                         {
                             foreach (var item in SelectedCategories.Items)
                             {
-                                cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins" +
-                                " FROM business, businessCategories WHERE business.BusID=businessCategories.BusID AND city = '" +
-                                cityListBox.SelectedItem.ToString() +
-                                "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
-                                "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() +
-                                "' AND cname = '" + item + "'; ";
-                                using (var reader = cmd.ExecuteReader())
-                                {
-                                    while (reader.Read())
-                                    {
-                                        count++;
-                                        displayGrid.Items.Add(new business()
-                                        {
-                                            name = reader.GetString(0),
-                                            address = reader.GetString(1),
-                                            city = reader.GetString(2),
-                                            state = reader.GetString(3),
-                                            Stars = reader.GetDouble(4),
-                                            reviewCount = reader.GetInt32(5),
-                                            reviewRating = reader.GetDouble(6),
-                                            numCheckins = reader.GetInt32(7)
-                                        });
-                                    }
-                                }
+                                countCategories++;
+                                sb.Append("'" + item + "',");
                             }
-                            connection.Close();
-                            numOfBusinessLabel.Content = "# of busnesses " + count.ToString();
-                            return;
+                            // remove extra ,
+                            sb.Remove(sb.Length - 1, 1);
+                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins" +
+                            " FROM business, businessCategories WHERE business.BusID=businessCategories.BusID AND city = '" +
+                            cityListBox.SelectedItem.ToString() +
+                            "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
+                            "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() +
+                            "' AND cname in (" + sb + ") GROUP BY bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins" +
+                            " HAVING count(*) = " + countCategories.ToString() + "; ";
                         }
                         else if (CategoryListBox.SelectedIndex == -1)
                         {
@@ -421,10 +413,7 @@ namespace Milestone1
                         connection.Close();
                     }
                 }
-                catch (NullReferenceException ex)
-                {
-
-                }
+                catch (NullReferenceException) { }
             }
         }
 

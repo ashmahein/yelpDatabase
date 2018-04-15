@@ -354,6 +354,25 @@ namespace Milestone1
                             "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() +
                             "' AND cname = '" + CategoryListBox.SelectedItem.ToString() + "'; ";
                         }
+
+                        //if the day and times are provided
+                        if (dowComboBox.SelectedIndex == -1 && ToComboBox.SelectedIndex == -1 && FromComboBox.SelectedIndex == -1)
+                        {
+                            //remove the string from group key word to add to the query
+                            String temp = cmd.CommandText;
+                            int index = temp.IndexOf("GROUP");
+                            temp = temp.Substring(0, index);
+
+                            cmd.CommandText = temp + " AND dayofweek = '" + dowComboBox.SelectedItem.ToString() + 
+                                                     "' AND opens <= '" + FromComboBox.SelectedIndex.ToString() +
+                                                     "' AND closed = '" + ToComboBox.SelectedIndex.ToString() + "'; ";
+                            if (SelectedCategories.Items.Count >= 1)
+                            {
+                                cmd.CommandText += "' AND cname in (" + sb + ") GROUP BY bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins" +
+                                                   " HAVING count(*) = " + countCategories.ToString() + "; ";
+                            }
+
+                        }
                         using (var reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())

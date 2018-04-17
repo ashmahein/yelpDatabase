@@ -51,7 +51,7 @@ namespace Milestone1
 
         private string connectionString()
         {
-            return "Host=localhost; Username=postgres; Password=Khan1992; Database=yelpdb";
+            return "Host=localhost; Username=postgres; Password=madera111; Database=yelpdb";
         }
 
         public void addStates()
@@ -302,6 +302,61 @@ namespace Milestone1
             removeButton.IsEnabled = false;
         }
 
+        private void friendDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            removeButton.IsEnabled = true;
+        }
+
+        private void removeFriend_Click(object sender, RoutedEventArgs e)
+        {
+            var rowIndex = Convert.ToInt32(friendDataGrid.SelectedIndex.ToString());
+
+            var values = friendDataGrid.SelectedCells[0];
+
+            var friendName = friendDataGrid.SelectedCells[0].Item;
+
+            #region
+            //DELETE FROM friendsTable WHERE uname, avgStar IN
+            //(SELECT*
+            //FROM userTable
+            //WHERE userID IN
+            //   (SELECT f.friendID
+            //    FROM userTable as u, friendsTable as f
+            //    WHERE u.userID = f.userID AND u.uname = 'Tyler' AND u.userID = 'NgBYSAf3BQUX0Mwj0Y_vjQ'));
+            #endregion
+
+            #region
+            /*
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionString()))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+                        cmd.CommandText = "DELETE '" + friendDataGrid.SelectedItem.ToString() + "'  FROM business WHERE state_ = '" + stateComboBox.SelectedItem.ToString() + "' ORDER BY city;";
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                cityListBox.Items.Add(reader.GetString(0).ToString());
+                            }
+                        }
+                    }
+                    //friendDataGrid.Items.Remove(friendDataGrid.SelectedItem);
+                    //removeButton.IsEnabled = false;
+                    connection.Close();
+                }
+            }
+            catch (NullReferenceException)
+            {
+
+            }
+            */
+            #endregion
+        }
+
         //public static string RemoveLast(this string text, string character)
         //{
         //    if (text.Length < 1) return text;
@@ -522,13 +577,6 @@ namespace Milestone1
             catch (NullReferenceException){}
             catch (InvalidOperationException) { }
         }
-
-        private void removeFriend_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        
     }
 }
 

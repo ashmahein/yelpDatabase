@@ -161,7 +161,7 @@
                     </GroupBox>
                     <GroupBox Name="FriendsBox" Header="Friends" HorizontalAlignment="Left" Margin="10,134,0,10" Width="317" BorderThickness="2">
                         <Grid>
-                            <DataGrid x:Name="friendDataGrid" HorizontalAlignment="Left" Height="444" Margin="10,10,0,0" VerticalAlignment="Top" Width="284"/>
+                            <DataGrid x:Name="friendDataGrid" HorizontalAlignment="Left" Height="444" Margin="10,10,0,0" VerticalAlignment="Top" Width="284" SelectionChanged="friendDataGrid_SelectionChanged"/>
                             <Button x:Name="removeFriend" Content="Remove Friend" HorizontalAlignment="Left" Height="34" Margin="10,459,0,0" VerticalAlignment="Top" Width="97" FontSize="12" BorderThickness="2" Click="removeFriend_Click"/>
                         </Grid>
                     </GroupBox>

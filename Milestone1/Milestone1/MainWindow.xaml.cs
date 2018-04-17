@@ -16,7 +16,6 @@ using Npgsql;
 
 namespace Milestone1
 {
-
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -24,8 +23,10 @@ namespace Milestone1
     {
         private List<String> DOW { get; set; }
         private List<String> times { get; set; }
+        private Friends row_info { get; set; }
         public MainWindow()
         {
+            
             InitializeComponent();
             DOW = new List<string>(new String[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" });
             times = new List<string>(new String[] { "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00",
@@ -51,7 +52,7 @@ namespace Milestone1
 
         private string connectionString()
         {
-            return "Host=localhost; Username=postgres; Password=madera111; Database=yelpdb";
+            return "Host=localhost; Username=postgres; Password=Khan1992; Database=yelpdb";
         }
 
         public void addStates()
@@ -305,15 +306,23 @@ namespace Milestone1
         private void friendDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             removeButton.IsEnabled = true;
+            try
+            {
+                row_info = (Friends)friendDataGrid.SelectedItem;
+            }
+            catch { }
         }
 
         private void removeFriend_Click(object sender, RoutedEventArgs e)
         {
-            var rowIndex = Convert.ToInt32(friendDataGrid.SelectedIndex.ToString());
+            //var rowIndex = Convert.ToInt32(friendDataGrid.SelectedIndex.ToString());
 
-            var values = friendDataGrid.SelectedCells[0];
+            //var values = friendDataGrid.SelectedCells[0];
 
-            var friendName = friendDataGrid.SelectedCells[0].Item;
+            //var friendName = friendDataGrid.SelectedCells[0].Item;
+
+            var uname = row_info.Uname;
+            var avgstars = row_info.avgStars;
 
             #region
             //DELETE FROM friendsTable WHERE uname, avgStar IN

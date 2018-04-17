@@ -319,18 +319,12 @@ namespace Milestone1
 
             //var values = friendDataGrid.SelectedCells[0];
 
-<<<<<<< HEAD
             //var friendName = friendDataGrid.SelectedCells[0].Item;
 
             var uname = row_info.Uname;
             var avgstars = row_info.avgStars;
 
-            #region
-=======
-            var friendsName = friendDataGrid.SelectedCells[1].Item;
 
-            #region SQL Query
->>>>>>> 36b16a371bedbb49086ffb6809145a9318349716
             //DELETE FROM friendsTable WHERE uname, avgStar IN
             //(SELECT*
             //FROM userTable
@@ -338,7 +332,7 @@ namespace Milestone1
             //   (SELECT f.friendID
             //    FROM userTable as u, friendsTable as f
             //    WHERE u.userID = f.userID AND u.uname = 'Tyler' AND u.userID = 'NgBYSAf3BQUX0Mwj0Y_vjQ'));
-            #endregion
+
 
             try
             {

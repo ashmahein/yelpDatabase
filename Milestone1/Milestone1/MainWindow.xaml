@@ -77,7 +77,7 @@
                             <Button Name="addReviewButton" Content="Add Review" HorizontalAlignment="Left" Margin="465,82,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.417,-0.008" FontSize="12" Width="108" Height="22" Background="DodgerBlue"/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Name="priceFilterGroupBox" Header="Filter by Price" HorizontalAlignment="Left" Margin="824,10,0,586" Width="192" BorderThickness="1">
+                    <GroupBox Name="priceFilterGroupBox" Header="Filter by Price" HorizontalAlignment="Left" Margin="824,10,0,582" Width="192" BorderThickness="1">
                         <Grid Margin="0,0,-2,0">
                             <CheckBox x:Name="lessThan10" Content="$" HorizontalAlignment="Left" Margin="30,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.101,0.675" FontSize="12"/>
                             <CheckBox x:Name="lessThan100" Content="$$" HorizontalAlignment="Left" Margin="30,33,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.101,0.675" FontSize="12"/>

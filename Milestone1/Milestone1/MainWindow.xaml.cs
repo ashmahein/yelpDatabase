@@ -319,12 +319,18 @@ namespace Milestone1
 
             //var values = friendDataGrid.SelectedCells[0];
 
+<<<<<<< HEAD
             //var friendName = friendDataGrid.SelectedCells[0].Item;
 
             var uname = row_info.Uname;
             var avgstars = row_info.avgStars;
 
             #region
+=======
+            var friendsName = friendDataGrid.SelectedCells[1].Item;
+
+            #region SQL Query
+>>>>>>> 36b16a371bedbb49086ffb6809145a9318349716
             //DELETE FROM friendsTable WHERE uname, avgStar IN
             //(SELECT*
             //FROM userTable
@@ -334,8 +340,6 @@ namespace Milestone1
             //    WHERE u.userID = f.userID AND u.uname = 'Tyler' AND u.userID = 'NgBYSAf3BQUX0Mwj0Y_vjQ'));
             #endregion
 
-            #region
-            /*
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString()))
@@ -344,15 +348,15 @@ namespace Milestone1
                     using (var cmd = new NpgsqlCommand())
                     {
                         cmd.Connection = connection;
-                        cmd.CommandText = "DELETE '" + friendDataGrid.SelectedItem.ToString() + "'  FROM business WHERE state_ = '" + stateComboBox.SelectedItem.ToString() + "' ORDER BY city;";
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                cityListBox.Items.Add(reader.GetString(0).ToString());
-                            }
-                        }
+                        /*
+                        cmd.CommandText = "DELETE FROM business WHERE '" + friendDataGrid.SelectedCells[0] + "' IN " +
+                                          "(SELECT * FROM userTable WHERE userID IN " +
+                                          "(SELECT f.friendID FROM userTable as u, friendsTable as f WHERE u.userID = f.userID AND u.uname = '" + friendDataGrid.SelectedCells[0] + "' " +
+                                          "AND u.userID = '" + friendDataGrid.SelectedCells[0] + "'));";
+                        */
                     }
+
+                    //Might also need to add code to reload the friends review comments section as well.
                     //friendDataGrid.Items.Remove(friendDataGrid.SelectedItem);
                     //removeButton.IsEnabled = false;
                     connection.Close();
@@ -362,8 +366,6 @@ namespace Milestone1
             {
 
             }
-            */
-            #endregion
         }
 
         //public static string RemoveLast(this string text, string character)

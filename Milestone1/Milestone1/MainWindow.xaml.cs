@@ -320,6 +320,9 @@ namespace Milestone1
 
         private void removeFriend_Click(object sender, RoutedEventArgs e)
         {
+
+            var removeFriend = row_info.userID;
+
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString()))
@@ -329,7 +332,7 @@ namespace Milestone1
                     {
                         cmd.Connection = connection;
 
-                        cmd.CommandText = "DELETE FROM friendsTable WHERE friendID IN ";
+                        cmd.CommandText = "DELETE FROM friendsTable WHERE userID = '" + userIdsListBox.SelectedItem.ToString() + "'friendID = '" + removeFriend.ToString() + "'";
 
                     }
 

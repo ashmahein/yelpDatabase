@@ -52,7 +52,7 @@ namespace Milestone1
 
         private string connectionString()
         {
-            return "Host=localhost; Username=postgres; Password=Khan1992; Database=yelpdb";
+            return "Host=localhost; Username=postgres; Password=madera111; Database=yelpdb";
         }
 
         public void addStates()
@@ -148,6 +148,11 @@ namespace Milestone1
             reviewCountCol.Header = "Votes";
             reviewCountCol.Binding = new Binding("votes");
             friendDataGrid.Columns.Add(reviewCountCol);
+
+            DataGridTextColumn friendIDCol = new DataGridTextColumn();
+            friendIDCol.Header = "Friend ID";
+            friendIDCol.Binding = new Binding("userID");
+            friendDataGrid.Columns.Add(friendIDCol);
 
             //--------------------Review Data Grid---------------//
 
@@ -315,25 +320,6 @@ namespace Milestone1
 
         private void removeFriend_Click(object sender, RoutedEventArgs e)
         {
-            //var rowIndex = Convert.ToInt32(friendDataGrid.SelectedIndex.ToString());
-
-            //var values = friendDataGrid.SelectedCells[0];
-
-            //var friendName = friendDataGrid.SelectedCells[0].Item;
-
-            var uname = row_info.Uname;
-            var avgstars = row_info.avgStars;
-
-
-            //DELETE FROM friendsTable WHERE uname, avgStar IN
-            //(SELECT*
-            //FROM userTable
-            //WHERE userID IN
-            //   (SELECT f.friendID
-            //    FROM userTable as u, friendsTable as f
-            //    WHERE u.userID = f.userID AND u.uname = 'Tyler' AND u.userID = 'NgBYSAf3BQUX0Mwj0Y_vjQ'));
-
-
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString()))
@@ -342,17 +328,66 @@ namespace Milestone1
                     using (var cmd = new NpgsqlCommand())
                     {
                         cmd.Connection = connection;
-                        /*
-                        cmd.CommandText = "DELETE FROM business WHERE '" + friendDataGrid.SelectedCells[0] + "' IN " +
-                                          "(SELECT * FROM userTable WHERE userID IN " +
-                                          "(SELECT f.friendID FROM userTable as u, friendsTable as f WHERE u.userID = f.userID AND u.uname = '" + friendDataGrid.SelectedCells[0] + "' " +
-                                          "AND u.userID = '" + friendDataGrid.SelectedCells[0] + "'));";
-                        */
+
+                        cmd.CommandText = "DELETE FROM friendsTable WHERE friendID IN ";
+
                     }
 
                     //Might also need to add code to reload the friends review comments section as well.
-                    //friendDataGrid.Items.Remove(friendDataGrid.SelectedItem);
-                    //removeButton.IsEnabled = false;
+                    friendDataGrid.Items.Remove(friendDataGrid.SelectedItem);
+                    removeButton.IsEnabled = false;
+
+                    //populating friends table
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+                        cmd.CommandText = "SELECT uname,avgstar,yelpingSince,fans,(cool + funny + useful) as votes, userID" +
+                            " FROM userTable as u" +
+                            " WHERE u.userID in (SELECT f.friendID FROM friendsTable as f WHERE f.userID='" +
+                            userIdsListBox.SelectedItem.ToString() + "'); ";
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                friendDataGrid.Items.Add(new Friends()
+                                {
+                                    Uname = reader.GetString(0),
+                                    avgStars = reader.GetDouble(1),
+                                    yelpingSince = reader.GetDate(2).ToString(),
+                                    fans = reader.GetDouble(3),
+                                    votes = reader.GetDouble(4),
+                                    userID = reader.GetString(5)
+                                });
+                            }
+                        }
+                    }
+
+                    //Populating review Table
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+                        cmd.CommandText = "SELECT uname, Bname, city, text" +
+                            " FROM userTable as u, Business as b, reviewTable as r" +
+                            " WHERE u.userID=r.userID AND b.busID=r.busID AND u.userID in" +
+                            " (SELECT f.friendID FROM friendsTable as f WHERE f.userID='" +
+                            userIdsListBox.SelectedItem.ToString() + "') ORDER BY yelpingSince DESC; ";
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                reviewDataGrid.Items.Add(new FriendReviews()
+                                {
+                                    Uname = reader.GetString(0),
+                                    Business = reader.GetString(1),
+                                    City = reader.GetString(2),
+                                    text = reader.GetString(3)
+
+                                });
+                            }
+                        }
+
+                    }
+
                     connection.Close();
                 }
             }
@@ -361,12 +396,6 @@ namespace Milestone1
 
             }
         }
-
-        //public static string RemoveLast(this string text, string character)
-        //{
-        //    if (text.Length < 1) return text;
-        //    return text.Remove(text.ToString().LastIndexOf(character), character.Length);
-        //}
 
         private void searchButton_Click(object sender, RoutedEventArgs e)
         {
@@ -461,7 +490,6 @@ namespace Milestone1
             catch (NullReferenceException) { }
         }
 
-
         private void currentUserTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
@@ -530,7 +558,7 @@ namespace Milestone1
                     using (var cmd = new NpgsqlCommand())
                     {
                         cmd.Connection = connection;
-                        cmd.CommandText = "SELECT uname,avgstar,yelpingSince,fans,(cool + funny + useful) as votes" +
+                        cmd.CommandText = "SELECT uname,avgstar,yelpingSince,fans,(cool + funny + useful) as votes, userID" +
                             " FROM userTable as u" +
                             " WHERE u.userID in (SELECT f.friendID FROM friendsTable as f WHERE f.userID='" +
                             userIdsListBox.SelectedItem.ToString() + "'); ";
@@ -544,8 +572,8 @@ namespace Milestone1
                                     avgStars = reader.GetDouble(1),
                                     yelpingSince = reader.GetDate(2).ToString(),
                                     fans = reader.GetDouble(3),
-                                    votes = reader.GetDouble(4)
-
+                                    votes = reader.GetDouble(4),
+                                    userID = reader.GetString(5)
                                 });
                             }
                         }

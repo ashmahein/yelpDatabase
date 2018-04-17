@@ -14,5 +14,6 @@ namespace Milestone1
         public Double fans { get; set; }
         //count of votes
         public Double votes { get; set; }
+        public String userID { get; set; }
     }
 }

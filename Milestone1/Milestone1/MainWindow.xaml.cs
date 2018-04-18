@@ -81,6 +81,7 @@ namespace Milestone1
 
         public void addColumns()
         {
+            #region business grid
             //---------------Business Grid---------//
             DataGridTextColumn businessNameCol = new DataGridTextColumn();
             businessNameCol.Header = "Business Name";
@@ -104,6 +105,11 @@ namespace Milestone1
             stateCol.Binding = new Binding("state");
             displayGrid.Columns.Add(stateCol);
 
+            DataGridTextColumn distanceCol = new DataGridTextColumn();
+            distanceCol.Header = "Dist";
+            distanceCol.Binding = new Binding("");
+            displayGrid.Columns.Add(distanceCol);
+
             DataGridTextColumn starsCol = new DataGridTextColumn();
             starsCol.Header = "Stars";
             starsCol.Binding = new Binding("Stars");
@@ -123,6 +129,9 @@ namespace Milestone1
             CheckinCol.Header = "Total Checkins";
             CheckinCol.Binding = new Binding("numCheckins");
             displayGrid.Columns.Add(CheckinCol);
+            #endregion
+
+            #region user friends
             //----------------------Friend data grid columns------------------//
 
             DataGridTextColumn friendNameCol = new DataGridTextColumn();
@@ -155,7 +164,9 @@ namespace Milestone1
             friendIDCol.Header = "Friend ID";
             friendIDCol.Binding = new Binding("userID");
             friendDataGrid.Columns.Add(friendIDCol);
+#endregion
 
+            #region friends review
             //--------------------Review Data Grid---------------//
 
             DataGridTextColumn userNameCol = new DataGridTextColumn();
@@ -179,6 +190,7 @@ namespace Milestone1
             textCol.Header = "Text";
             textCol.Binding = new Binding("text");
             reviewDataGrid.Columns.Add(textCol);
+            #endregion
         }
 
         private void stateComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -336,7 +348,8 @@ namespace Milestone1
                     {
                         cmd.Connection = connection;
 
-                        cmd.CommandText = "DELETE FROM friendsTable WHERE userID ='" + user + "'friendID ='" + removeFriend + "';";
+                        cmd.CommandText = "DELETE FROM friendsTable WHERE userID ='" + user + "' AND friendID ='" + removeFriend + "';";
+                        int numDeletions = cmd.ExecuteNonQuery();
                     }
                     //Might also need to add code to reload the friends review comments section as well.
 
@@ -593,6 +606,38 @@ namespace Milestone1
             catch (NullReferenceException){}
             catch (InvalidOperationException) { }
         }
+
+        private void setLocationButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (longitudeTextBox.Text == "" || latitudeTextBox.Text == "")
+            {
+                return;
+            }
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionString()))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+                        cmd.CommandText = "SELECT bname, longitude, latitude FROM business;";
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var bname = reader.GetString(0);
+                                var bLong = reader.GetDouble(1);
+                                var bLat = reader.GetDouble(2);
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (NullReferenceException) { }
+        }
+    }
     }
 }
 

@@ -154,9 +154,9 @@
                         <Grid>
                             <Label x:Name="longitudeLabel" Content="Longitude" HorizontalAlignment="Left" Height="24" Margin="1,0,0,0" VerticalAlignment="Top" Width="55" FontSize="10"/>
                             <Label x:Name="latitudeLabel" Content="Latitude" HorizontalAlignment="Left" Height="24" Margin="1,0,0,56.6" VerticalAlignment="Bottom" Width="55" FontSize="10"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="61,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="187" FontSize="9"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="61,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="187" FontSize="9"/>
-                            <Button x:Name="setLocationButton" Content="Set Location" HorizontalAlignment="Left" Height="22" Margin="164,50,0,0" VerticalAlignment="Top" Width="84" FontSize="12" BorderThickness="2"/>
+                            <TextBox x:Name="longitudeTextBox" HorizontalAlignment="Left" Height="20" Margin="61,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="187" FontSize="9"/>
+                            <TextBox x:Name="latitudeTextBox" HorizontalAlignment="Left" Height="20" Margin="61,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="187" FontSize="9"/>
+                            <Button x:Name="setLocationButton" Content="Set Location" HorizontalAlignment="Left" Height="22" Margin="164,50,0,0" VerticalAlignment="Top" Width="84" FontSize="12" BorderThickness="2" Click="setLocationButton_Click"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Name="FriendsBox" Header="Friends" HorizontalAlignment="Left" Margin="10,134,0,10" Width="317" BorderThickness="2">

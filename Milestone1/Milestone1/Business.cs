@@ -16,5 +16,6 @@ namespace Milestone1
         public int reviewCount { get; set; }
         public Double reviewRating { get; set; }
         public int numCheckins { get; set; }
+        public Double distance { get; set; }
     }
 }

@@ -50,3 +50,5 @@ C:\Users\hasnain\Documents\Spring2018\Cpts451\repo\yelpDatabase\Milestone1\Miles
 C:\Users\hasnain\Documents\Spring2018\Cpts451\repo\yelpDatabase\Milestone1\Milestone1\obj\Debug\Milestone1.csproj.CoreCompileInputs.cache
 C:\Users\hasnain\Documents\Spring2018\Cpts451\repo\yelpDatabase\Milestone1\Milestone1\obj\Debug\Milestone1.exe
 C:\Users\hasnain\Documents\Spring2018\Cpts451\repo\yelpDatabase\Milestone1\Milestone1\obj\Debug\Milestone1.pdb
+C:\Users\Ash\Documents\Milestone3\yelpDatabase\Milestone1\Milestone1\obj\Debug\reviewWindow.g.cs
+C:\Users\Ash\Documents\Milestone3\yelpDatabase\Milestone1\Milestone1\obj\Debug\reviewWindow.baml

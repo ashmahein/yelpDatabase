@@ -24,9 +24,10 @@ namespace Milestone1
         private List<String> DOW { get; set; }
         private List<String> times { get; set; }
         private Friends row_info { get; set; }
+        private business brow_info { get; set; }
+        //private Friends row_info { get; set; }
         private double calDistance { get; set; }
-        //private FriendReviews reviewTable { get; set; }
-        //private List<String> friendsReviewItems { get; set; }
+
         public MainWindow()
         {
             
@@ -50,6 +51,8 @@ namespace Milestone1
             searchButton.IsEnabled = false;
             addButton.IsEnabled = false;
             removeButton.IsEnabled = false;
+            checkinButton.IsEnabled = false;
+            showReviewButton.IsEnabled = false;
             //set default location
             latitudeTextBox.Text = "33.3187306943";
             longitudeTextBox.Text = "-111.943387985";
@@ -132,6 +135,12 @@ namespace Milestone1
             CheckinCol.Header = "Total Checkins";
             CheckinCol.Binding = new Binding("numCheckins");
             displayGrid.Columns.Add(CheckinCol);
+
+            DataGridTextColumn idCol = new DataGridTextColumn();
+            idCol.Header = "busID";
+            addressCol.Width = 10;
+            idCol.Binding = new Binding("busID");
+            displayGrid.Columns.Add(idCol);
             #endregion
 
             #region user friends
@@ -425,23 +434,23 @@ namespace Milestone1
                             }
                             // remove extra ,
                             sb.Remove(sb.Length - 1, 1);
-                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins, latitude, longitude" +
+                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude,busid" +
                             " FROM business, businessCategories WHERE business.BusID=businessCategories.BusID AND city = '" +
                             cityListBox.SelectedItem.ToString() +
                             "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
                             "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() +
-                            "' AND cname in (" + sb + ") GROUP BY bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins" +
+                            "' AND cname in (" + sb + ") GROUP BY bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude,busid" +
                             " HAVING count(*) = " + countCategories.ToString() + " ORDER BY bname; ";
                         }
                         else if (CategoryListBox.SelectedIndex == -1)
                         {
-                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude FROM business WHERE city = '" +
+                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude,busid FROM business WHERE city = '" +
                                 cityListBox.SelectedItem.ToString() + "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
                                 "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() + "' ORDER BY bname; ";
                         }
                         else
                         {
-                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude, longitude" +
+                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude,busid" +
                             " FROM business, businessCategories WHERE business.BusID=businessCategories.BusID AND city = '" +
                             cityListBox.SelectedItem.ToString() +
                             "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
@@ -466,7 +475,7 @@ namespace Milestone1
                                                      "' AND closed = '" + ToComboBox.SelectedIndex.ToString() + "'; ";
                             if (SelectedCategories.Items.Count >= 1)
                             {
-                                cmd.CommandText += "' AND cname in (" + sb + ") GROUP BY bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins" +
+                                cmd.CommandText += "' AND cname in (" + sb + ") GROUP BY bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude,busid" +
                                                    " HAVING count(*) = " + countCategories.ToString() + "; ORDER BY bname";
                             }
 
@@ -477,7 +486,6 @@ namespace Milestone1
                             {
                                 count++;
                                 calDistance = Math.Round(DistanceTo(reader.GetDouble(8), reader.GetDouble(9), Convert.ToDouble(latitudeTextBox.Text), Convert.ToDouble(longitudeTextBox.Text)), 2);
-
                                 displayGrid.Items.Add(new business()
                                 {
                                     name = reader.GetString(0),
@@ -488,8 +496,9 @@ namespace Milestone1
                                     reviewCount = reader.GetInt32(5),
                                     reviewRating = reader.GetDouble(6),
                                     numCheckins = reader.GetInt32(7),
-                                    distance = calDistance
-                            });
+                                    distance = calDistance,
+                                    busID = reader.GetString(10)
+                                });
                             }
                         }
 
@@ -623,7 +632,6 @@ namespace Milestone1
             catch (InvalidOperationException) { }
         }
 
-
         //The user will enter their location into the textboxes and when they click set location, the distance to the businesses will get updated.
         private void setLocationButton_Click(object sender, RoutedEventArgs e)
         {
@@ -652,6 +660,59 @@ namespace Milestone1
             }
 
             return dist;
+        }
+
+        private void showReviewButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            reviewWindow reviewWin = new reviewWindow();
+            var busid = brow_info.busID;
+
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionString()))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+                        cmd.CommandText = "SELECT r.date_, u.uname, r.stars, r.text, r.funny, r.useful, r.cool" +
+                                          " FROM reviewTable as r, business as b, userTable as u" +
+                                          " WHERE r.busID = b.busID AND r.userID = u.userID AND r.busID='" + busid + "';";
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                reviewWin.businessReviewGrid.Items.Add(new BusinessReview()
+                                {
+                                    date = reader.GetDate(0).ToString(),
+                                    Uname = reader.GetString(1),
+                                    stars = reader.GetDouble(2),
+                                    text = reader.GetString(3),
+                                    funny = reader.GetDouble(4),
+                                    useful = reader.GetDouble(5),
+                                    cool = reader.GetDouble(6)
+                                });
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (NullReferenceException) { }
+
+            reviewWin.Show();
+        }
+
+        private void displayGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            checkinButton.IsEnabled = true;
+            showReviewButton.IsEnabled = true;
+            try
+            {
+                brow_info = (business)displayGrid.SelectedItem;
+            }
+            catch { }
         }
     }
 }

@@ -17,5 +17,6 @@ namespace Milestone1
         public Double reviewRating { get; set; }
         public int numCheckins { get; set; }
         public Double distance { get; set; }
+        public String busID { get; set; }
     }
 }

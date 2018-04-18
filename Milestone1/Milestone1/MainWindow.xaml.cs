@@ -24,6 +24,7 @@ namespace Milestone1
         private List<String> DOW { get; set; }
         private List<String> times { get; set; }
         private Friends row_info { get; set; }
+        private double calDistance { get; set; }
         //private FriendReviews reviewTable { get; set; }
         //private List<String> friendsReviewItems { get; set; }
         public MainWindow()
@@ -49,7 +50,9 @@ namespace Milestone1
             searchButton.IsEnabled = false;
             addButton.IsEnabled = false;
             removeButton.IsEnabled = false;
-
+            //set default location
+            latitudeTextBox.Text = "33.3187306943";
+            longitudeTextBox.Text = "-111.943387985";
         }
 
         private string connectionString()
@@ -107,7 +110,7 @@ namespace Milestone1
 
             DataGridTextColumn distanceCol = new DataGridTextColumn();
             distanceCol.Header = "Dist";
-            distanceCol.Binding = new Binding("");
+            distanceCol.Binding = new Binding("distance");
             displayGrid.Columns.Add(distanceCol);
 
             DataGridTextColumn starsCol = new DataGridTextColumn();
@@ -403,6 +406,7 @@ namespace Milestone1
             to = ToComboBox.SelectedIndex;
             from = FromComboBox.SelectedIndex;
 
+
             StringBuilder sb = new StringBuilder();
             try
             {
@@ -421,28 +425,28 @@ namespace Milestone1
                             }
                             // remove extra ,
                             sb.Remove(sb.Length - 1, 1);
-                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins" +
+                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins, latitude, longitude" +
                             " FROM business, businessCategories WHERE business.BusID=businessCategories.BusID AND city = '" +
                             cityListBox.SelectedItem.ToString() +
                             "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
                             "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() +
                             "' AND cname in (" + sb + ") GROUP BY bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins" +
-                            " HAVING count(*) = " + countCategories.ToString() + "; ";
+                            " HAVING count(*) = " + countCategories.ToString() + " ORDER BY bname; ";
                         }
                         else if (CategoryListBox.SelectedIndex == -1)
                         {
-                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins FROM business WHERE city = '" +
+                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude FROM business WHERE city = '" +
                                 cityListBox.SelectedItem.ToString() + "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
-                                "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() + "'; ";
+                                "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() + "' ORDER BY bname; ";
                         }
                         else
                         {
-                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins" +
+                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude, longitude" +
                             " FROM business, businessCategories WHERE business.BusID=businessCategories.BusID AND city = '" +
                             cityListBox.SelectedItem.ToString() +
                             "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
                             "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() +
-                            "' AND cname = '" + CategoryListBox.SelectedItem.ToString() + "'; ";
+                            "' AND cname = '" + CategoryListBox.SelectedItem.ToString() + "' ORDER BY bname; ";
                         }
 
                         //if the day and times are provided
@@ -463,7 +467,7 @@ namespace Milestone1
                             if (SelectedCategories.Items.Count >= 1)
                             {
                                 cmd.CommandText += "' AND cname in (" + sb + ") GROUP BY bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins" +
-                                                   " HAVING count(*) = " + countCategories.ToString() + "; ";
+                                                   " HAVING count(*) = " + countCategories.ToString() + "; ORDER BY bname";
                             }
 
                         }
@@ -472,6 +476,8 @@ namespace Milestone1
                             while (reader.Read())
                             {
                                 count++;
+                                calDistance = Math.Round(DistanceTo(reader.GetDouble(8), reader.GetDouble(9), Convert.ToDouble(latitudeTextBox.Text), Convert.ToDouble(longitudeTextBox.Text)), 2);
+
                                 displayGrid.Items.Add(new business()
                                 {
                                     name = reader.GetString(0),
@@ -481,8 +487,9 @@ namespace Milestone1
                                     Stars = reader.GetDouble(4),
                                     reviewCount = reader.GetInt32(5),
                                     reviewRating = reader.GetDouble(6),
-                                    numCheckins = reader.GetInt32(7)
-                                });
+                                    numCheckins = reader.GetInt32(7),
+                                    distance = calDistance
+                            });
                             }
                         }
 
@@ -620,38 +627,7 @@ namespace Milestone1
         //The user will enter their location into the textboxes and when they click set location, the distance to the businesses will get updated.
         private void setLocationButton_Click(object sender, RoutedEventArgs e)
         {
-            if (longitudeTextBox.Text == "" || latitudeTextBox.Text == "")
-            {
-                return;
-            }
-            else
-            {
-                var userLong = Convert.ToDouble(longitudeTextBox.Text);
-                var userLat = Convert.ToDouble(latitudeTextBox.Text);
-            }
-            try
-            {
-                using (var connection = new NpgsqlConnection(connectionString()))
-                {
-                    connection.Open();
-                    using (var cmd = new NpgsqlCommand())
-                    {
-                        cmd.Connection = connection;
-                        cmd.CommandText = "SELECT bname, longitude, latitude FROM business;";
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                var bname = reader.GetString(0);
-                                var bLong = reader.GetDouble(1);
-                                var bLat = reader.GetDouble(2);
-                            }
-                        }
-                    }
-                    connection.Close();
-                }
-            }
-            catch (NullReferenceException) { }
+                       
         }
 
         public double DistanceTo(double lat1, double lon1, double lat2, double lon2, char unit = 'M')

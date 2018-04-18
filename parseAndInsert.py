@@ -12,7 +12,7 @@ def cleanStr4SQL(s):
             s = "".join(sList)
             i += 1
         i += 1
-    print(s)
+    #print(s)
 
     return s.replace("'","`").replace("\n"," ")
 
@@ -546,9 +546,9 @@ def insert2BusinessHoursTable():
 #insert2BusinessTable()
 #insert2UserTable()
 #insert2ReviewTable()
-#insert2FriendsTable()
+insert2FriendsTable()
 #insert2BusinessCategoriesTable()
 #insert2CheckinTable()
-insert2AttributeTable()
+#insert2AttributeTable()
 #insert2BusinessAttributeTable()
 #insert2BusinessHoursTable()

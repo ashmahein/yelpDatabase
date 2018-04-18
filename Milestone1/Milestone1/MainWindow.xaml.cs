@@ -24,6 +24,8 @@ namespace Milestone1
         private List<String> DOW { get; set; }
         private List<String> times { get; set; }
         private Friends row_info { get; set; }
+        //private FriendReviews reviewTable { get; set; }
+        //private List<String> friendsReviewItems { get; set; }
         public MainWindow()
         {
             
@@ -321,7 +323,9 @@ namespace Milestone1
         private void removeFriend_Click(object sender, RoutedEventArgs e)
         {
 
-            var removeFriend = row_info.userID;
+            var removeFriend = row_info.userID.ToString();
+            var user = userIdsListBox.SelectedItem.ToString();
+            var friendname = row_info.Uname;
 
             try
             {
@@ -332,38 +336,16 @@ namespace Milestone1
                     {
                         cmd.Connection = connection;
 
-                        cmd.CommandText = "DELETE FROM friendsTable WHERE userID = '" + userIdsListBox.SelectedItem.ToString() + "'friendID = '" + removeFriend.ToString() + "'";
-
+                        cmd.CommandText = "DELETE FROM friendsTable WHERE userID ='" + user + "'friendID ='" + removeFriend + "';";
                     }
-
                     //Might also need to add code to reload the friends review comments section as well.
+
                     friendDataGrid.Items.Remove(friendDataGrid.SelectedItem);
+                    friendDataGrid.Items.Refresh();
                     removeButton.IsEnabled = false;
 
-                    //populating friends table
-                    using (var cmd = new NpgsqlCommand())
-                    {
-                        cmd.Connection = connection;
-                        cmd.CommandText = "SELECT uname,avgstar,yelpingSince,fans,(cool + funny + useful) as votes, userID" +
-                            " FROM userTable as u" +
-                            " WHERE u.userID in (SELECT f.friendID FROM friendsTable as f WHERE f.userID='" +
-                            userIdsListBox.SelectedItem.ToString() + "'); ";
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                friendDataGrid.Items.Add(new Friends()
-                                {
-                                    Uname = reader.GetString(0),
-                                    avgStars = reader.GetDouble(1),
-                                    yelpingSince = reader.GetDate(2).ToString(),
-                                    fans = reader.GetDouble(3),
-                                    votes = reader.GetDouble(4),
-                                    userID = reader.GetString(5)
-                                });
-                            }
-                        }
-                    }
+                    reviewDataGrid.Items.Clear();
+                    reviewDataGrid.Items.Refresh();
 
                     //Populating review Table
                     using (var cmd = new NpgsqlCommand())
@@ -384,13 +366,11 @@ namespace Milestone1
                                     Business = reader.GetString(1),
                                     City = reader.GetString(2),
                                     text = reader.GetString(3)
-
                                 });
                             }
                         }
 
                     }
-
                     connection.Close();
                 }
             }

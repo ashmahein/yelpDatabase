@@ -398,6 +398,11 @@ namespace Milestone1
             int count = 0;
             int countCategories = 0;
             displayGrid.Items.Clear();
+            int day = 0, to = 0, from = 0;
+            day = dowComboBox.SelectedIndex;
+            to = ToComboBox.SelectedIndex;
+            from = FromComboBox.SelectedIndex;
+
             StringBuilder sb = new StringBuilder();
             try
             {
@@ -441,12 +446,16 @@ namespace Milestone1
                         }
 
                         //if the day and times are provided
-                        if (dowComboBox.SelectedIndex == -1 && ToComboBox.SelectedIndex == -1 && FromComboBox.SelectedIndex == -1)
+                        if (day != -1 && to != -1 && from != -1)
                         {
                             //remove the string from group key word to add to the query
                             String temp = cmd.CommandText;
-                            int index = temp.IndexOf("GROUP");
-                            temp = temp.Substring(0, index);
+                            int index = 0;
+                            index = temp.IndexOf("GROUP");
+                            if (index > 0)
+                            {
+                                temp = temp.Substring(0, index);
+                            }
 
                             cmd.CommandText = temp + " AND dayofweek = '" + dowComboBox.SelectedItem.ToString() + 
                                                      "' AND opens <= '" + FromComboBox.SelectedIndex.ToString() +
@@ -607,11 +616,18 @@ namespace Milestone1
             catch (InvalidOperationException) { }
         }
 
+
+        //The user will enter their location into the textboxes and when they click set location, the distance to the businesses will get updated.
         private void setLocationButton_Click(object sender, RoutedEventArgs e)
         {
             if (longitudeTextBox.Text == "" || latitudeTextBox.Text == "")
             {
                 return;
+            }
+            else
+            {
+                var userLong = Convert.ToDouble(longitudeTextBox.Text);
+                var userLat = Convert.ToDouble(latitudeTextBox.Text);
             }
             try
             {
@@ -637,7 +653,30 @@ namespace Milestone1
             }
             catch (NullReferenceException) { }
         }
-    }
+
+        public double DistanceTo(double lat1, double lon1, double lat2, double lon2, char unit = 'M')
+        {
+            double rlat1 = Math.PI * lat1 / 180;
+            double rlat2 = Math.PI * lat2 / 180;
+            double theta = lon1 - lon2;
+            double rtheta = Math.PI * theta / 180;
+            double dist = Math.Sin(rlat1) * Math.Sin(rlat2) + Math.Cos(rlat1) * Math.Cos(rlat2) * Math.Cos(rtheta);
+            dist = Math.Acos(dist);
+            dist = dist * 180 / Math.PI;
+            dist = dist * 60 * 1.1515;
+
+            switch (unit)
+            {
+                case 'K': //Kilometers -> default
+                    return dist * 1.609344;
+                case 'N': //Nautical Miles 
+                    return dist * 0.8684;
+                case 'M': //Miles
+                    return dist;
+            }
+
+            return dist;
+        }
     }
 }
 

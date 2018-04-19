@@ -18,7 +18,7 @@ WHERE business.busid = reviewtable.busid);
 CREATE OR REPLACE FUNCTION increaseCheckIn() Returns Trigger AS'
 Begin
 	UPDATE business
-        SET numcheckins = OLD.numcheckins + 1
+        SET numcheckins = numcheckins + 1
         WHERE busid = NEW.busid;
     RETURN NEW;
 END
@@ -33,34 +33,41 @@ EXECUTE PROCEDURE increaseCheckIn();
 CREATE OR REPLACE FUNCTION updateReviewRating() Returns Trigger AS'
 Begin
 	 UPDATE business
-     	SET business.reviewratings = (SELECT SUM(stars) FROM reviewtable
-         WHERE business.busid = reviewtable.busid) /
-         (SELECT COUNT (*) FROM reviewtable
-         WHERE business.busid = reviewtable.busid);
+     	SET reviewratings = 
+        (SELECT AVG(stars) FROM reviewtable
+         WHERE busid = NEW.busid);
      RETURN NEW;
 END
 ' Language plpgsql;
-
  
 CREATE TRIGGER reviewRatingTrigger
-AFTER UPDATE OF stars ON reviewtable
+AFTER INSERT ON reviewtable
 FOR EACH ROW
 EXECUTE PROCEDURE updateReviewRating();
 
 CREATE OR REPLACE FUNCTION updateReviewCount() Returns Trigger AS'
 Begin
 	UPDATE business
-        SET business.reviewcount =
+        SET reviewCount =
         (SELECT COUNT (*) FROM reviewtable
-        WHERE business.busid = reviewtable.busid);
+        WHERE busid = NEW.busid);
     RETURN NEW;
 END
 ' Language plpgsql;
 
 CREATE TRIGGER reviewcountTrigger
-AFTER UPDATE OF stars ON reviewtable
+AFTER INSERT ON reviewtable
 FOR EACH ROW
 EXECUTE PROCEDURE updateReviewCount();
 
+--------------------------------------------------------
 
+SELECT SUM(morning) + SUM(afternoon) + SUM(evening) + SUM(night) 
+FROM checkin 
+WHERE BusID ='0Zb-kM0JZ08WCBiCEHixSw';
+
+
+UPDATE checkin 
+SET afternoon = '3'
+WHERE BusID ='0Zb-kM0JZ08WCBiCEHixSw'  AND dayOfWeek='Saturday';
  

@@ -448,9 +448,7 @@ namespace Milestone1
                                 int index = 0;
                                 index = temp.IndexOf("FROM");
                                 if (index > 0)
-                                {
                                     temp = temp.Substring(0, index);
-                                }
 
                                 cmd.CommandText = temp + " FROM business, hours, businessCategories WHERE business.BusID = businessCategories.BusID AND business.BusID=hours.BusID"+
                                                   " AND city = '" + cityListBox.SelectedItem.ToString() +
@@ -471,6 +469,24 @@ namespace Milestone1
                                 " FROM business WHERE city = '" +
                                 cityListBox.SelectedItem.ToString() + "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
                                 "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() + "' ORDER BY bname ";
+                            if (day != -1 && to != -1 && from != -1)
+                            {
+                                //remove the string from group key word to add to the query
+                                String temp = cmd.CommandText;
+                                int index = 0;
+                                index = temp.IndexOf("FROM");
+                                if (index > 0)
+                                    temp = temp.Substring(0, index);
+
+                                cmd.CommandText = temp + " FROM business, hours WHERE business.BusID=hours.BusID" +
+                                                  " AND city = '" + cityListBox.SelectedItem.ToString() +
+                                                  "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
+                                                  "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() +
+                                                  "' AND dayofweek = '" + dowComboBox.SelectedItem.ToString() +
+                                                  "' AND opens <= '" + FromComboBox.SelectedIndex.ToString() +
+                                                  ":00' AND closed = '" + ToComboBox.SelectedIndex.ToString() +
+                                                  ":00' ORDER BY bname";
+                            }
                         }
                         else
                         {
@@ -480,6 +496,25 @@ namespace Milestone1
                             "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
                             "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() +
                             "' AND cname = '" + CategoryListBox.SelectedItem.ToString() + "' ORDER BY bname ";
+                            if (day != -1 && to != -1 && from != -1)
+                            {
+                                //remove the string from group key word to add to the query
+                                String temp = cmd.CommandText;
+                                int index = 0;
+                                index = temp.IndexOf("FROM");
+                                if (index > 0)
+                                    temp = temp.Substring(0, index);
+
+                                cmd.CommandText = temp + " FROM business, hours, businessCategories WHERE business.BusID = businessCategories.BusID AND business.BusID=hours.BusID" +
+                                                  " AND city = '" + cityListBox.SelectedItem.ToString() +
+                                                  "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
+                                                  "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() +
+                                                  "' AND dayofweek = '" + dowComboBox.SelectedItem.ToString() +
+                                                  "' AND opens <= '" + FromComboBox.SelectedIndex.ToString() +
+                                                  ":00' AND closed = '" + ToComboBox.SelectedIndex.ToString() +
+                                                  ":00' AND cname = '" + CategoryListBox.SelectedItem.ToString() + "' ORDER BY bname ";
+
+                            }
                         }
                         
                         using (var reader = cmd.ExecuteReader())

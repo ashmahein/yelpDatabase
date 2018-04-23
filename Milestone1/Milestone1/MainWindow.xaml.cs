@@ -414,6 +414,7 @@ namespace Milestone1
             day = dowComboBox.SelectedIndex;
             to = ToComboBox.SelectedIndex;
             from = FromComboBox.SelectedIndex;
+            List<business> bList = new List<business>();
 
 
             StringBuilder sb = new StringBuilder();
@@ -516,14 +517,14 @@ namespace Milestone1
 
                             }
                         }
-                        
+
                         using (var reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {
                                 count++;
                                 calDistance = Math.Round(DistanceTo(reader.GetDouble(8), reader.GetDouble(9), Convert.ToDouble(latitudeTextBox.Text), Convert.ToDouble(longitudeTextBox.Text)), 2);
-                                displayGrid.Items.Add(new business()
+                                bList.Add(new business()
                                 {
                                     name = reader.GetString(0),
                                     address = reader.GetString(1),
@@ -539,14 +540,301 @@ namespace Milestone1
                             }
                         }
 
+                        bList = filterByAttributes(bList, cmd);
+                        bList = filterByPriceLevel(bList, cmd);
+                        bList = filterByMeals(bList, cmd);
                     }
                     connection.Close();
+
+                    count = displayBusinesses(bList);
                 }
                 numOfBusinessLabel.Content = "# of busnesses " + count.ToString();
 
             }
             catch (NullReferenceException) { }
         }
+
+        private int displayBusinesses(List<business> bList)
+        {
+            int count = 0;
+            foreach (business item in bList)
+            {
+                count++;
+                displayGrid.Items.Add(item);
+            }
+            return count;
+        }
+
+                private List<business> filterByAttributes(List<business> bList, NpgsqlCommand cmd)
+        {
+            StringBuilder fromLine = new StringBuilder(" FROM business as b");
+            StringBuilder whereLine = new StringBuilder(" WHERE");
+            StringBuilder statement = new StringBuilder("Select b.bname, b.addr, b.city, b.state_, b.bStars, b.reviewCount, b.reviewRatings, b.numCheckins, b.latitude, b.longitude, b.busid");
+            List<business> newbList = new List<business>();
+
+
+            if (creditCardAtt.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba1");
+                whereLine.Append(" ba1.busID = b.busId and ba1.aname = 'BusinessAcceptsCreditCards' and ba1.value_ = 'True' and");
+            }
+            if (takeReservationAtt.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba2");
+                whereLine.Append(" ba2.busID = b.busId and ba2.aname = 'RestaurantsReservations' and ba2.value_ = 'True' and");
+            }
+            if (wheelchairAtt.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba3");
+                whereLine.Append(" ba3.busID = b.busId and ba3.aname = 'WheelchairAccessible' and ba3.value_ = 'True' and");
+            }
+            if (outdoorAtt.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba4");
+                whereLine.Append(" ba4.busID = b.busId and ba4.aname = 'OutdoorSeating' and ba4.value_ = 'True' and");
+            }
+            if (kidsAtt.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba5");
+                whereLine.Append(" ba5.busID = b.busId and ba5.aname = 'GoodForKids' and ba5.value_ = 'True' and");
+            }
+            if (groupAtt.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba6");
+                whereLine.Append("ba6.busID = b.busId and ba6.aname = 'RestaurantsGoodForGroups' and ba6.value_ = 'True' and");
+            }
+            if (deliveryAtt.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba7");
+                whereLine.Append(" ba7.busID = b.busId and ba7.aname = 'RestaurantsDelivery' and ba7.value_ = 'True' and");
+            }
+            if (takeOutAtt.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba8");
+                whereLine.Append(" ba8.busID = b.busId and ba8.aname = 'RestaurantsTakeOut' and ba8.value_ = 'True' and");
+            }
+            if (wifiAtt.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba9");
+                whereLine.Append(" ba9.busID = b.busId and ba9.aname = 'WiFi' and ba9.value_ = 'True' and");
+            }
+            if (bikeAtt.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba10");
+                whereLine.Append(" ba10.busID = b.busId and ba10.aname = 'BikeParking' and ba10.value_ = 'True' and");
+            }
+
+            if (whereLine.ToString() == " WHERE")
+            {
+                newbList = bList;
+            }
+
+            else
+            {
+                whereLine.Remove(whereLine.Length - 4, 4);
+                whereLine.Append(";");
+                statement.Append(fromLine);
+                statement.Append(whereLine);
+                cmd.CommandText = statement.ToString();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        calDistance = Math.Round(DistanceTo(reader.GetDouble(8), reader.GetDouble(9), Convert.ToDouble(latitudeTextBox.Text), Convert.ToDouble(longitudeTextBox.Text)), 2);
+
+                        business temp = new business()
+                        {
+                            name = reader.GetString(0),
+                            address = reader.GetString(1),
+                            city = reader.GetString(2),
+                            state = reader.GetString(3),
+                            Stars = reader.GetDouble(4),
+                            reviewCount = reader.GetInt32(5),
+                            reviewRating = reader.GetDouble(6),
+                            numCheckins = reader.GetInt32(7),
+                            distance = calDistance,
+                            busID = reader.GetString(10)
+                        };
+
+                        //checks to see if the business is part of the already filtered list. Filtered using the other filters (categories, zip code ...etc).
+                        foreach (business b in bList)
+                        {
+                            if (b.busID == temp.busID)
+                            {
+                                newbList.Add(temp);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return newbList;
+        }
+
+        private List<business> filterByPriceLevel(List<business> bList, NpgsqlCommand cmd)
+        {
+            StringBuilder fromLine = new StringBuilder(" FROM business as b");
+            StringBuilder whereLine = new StringBuilder(" WHERE");
+            StringBuilder statement = new StringBuilder("Select b.bname, b.addr, b.city, b.state_, b.bStars, b.reviewCount, b.reviewRatings, b.numCheckins, b.latitude, b.longitude, b.busid");
+            List<business> newbList = new List<business>();
+
+
+            if (lessThan10.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba1");
+                whereLine.Append(" ba1.busID = b.busId and ba1.aname = 'RestaurantsPriceRange2' and ba1.value_ = '1' and");
+            }
+            if (lessThan100.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba2");
+                whereLine.Append(" ba2.busID = b.busId and ba2.aname = 'RestaurantsPriceRange2' and ba2.value_ = '2' and");
+            }
+            if (lessThan1000.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba3");
+                whereLine.Append(" ba3.busID = b.busId and ba3.aname = 'RestaurantsPriceRange2' and ba3.value_ = '3' and");
+            }
+            if (lessThan10000.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba4");
+                whereLine.Append(" ba4.busID = b.busId and ba4.aname = 'RestaurantsPriceRange2' and ba4.value_ = '4' and");
+            }
+
+            if (whereLine.ToString() == " WHERE")
+            {
+                newbList = bList;
+            }
+            else
+            {
+                whereLine.Remove(whereLine.Length - 4, 4);
+                whereLine.Append(";");
+                statement.Append(fromLine);
+                statement.Append(whereLine);
+                cmd.CommandText = statement.ToString();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        calDistance = Math.Round(DistanceTo(reader.GetDouble(8), reader.GetDouble(9), Convert.ToDouble(latitudeTextBox.Text), Convert.ToDouble(longitudeTextBox.Text)), 2);
+
+                        business temp = new business()
+                        {
+                            name = reader.GetString(0),
+                            address = reader.GetString(1),
+                            city = reader.GetString(2),
+                            state = reader.GetString(3),
+                            Stars = reader.GetDouble(4),
+                            reviewCount = reader.GetInt32(5),
+                            reviewRating = reader.GetDouble(6),
+                            numCheckins = reader.GetInt32(7),
+                            distance = calDistance,
+                            busID = reader.GetString(10)
+                        };
+
+                        //checks to see if the business is part of the already filtered list. Filtered using the other filters (categories, zip code ...etc).
+                        foreach (business b in bList)
+                        {
+                            if (b.busID == temp.busID)
+                            {
+                                newbList.Add(temp);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return newbList;
+        }
+
+        private List<business> filterByMeals(List<business> bList, NpgsqlCommand cmd)
+        {
+            StringBuilder fromLine = new StringBuilder(" FROM business as b");
+            StringBuilder whereLine = new StringBuilder(" WHERE");
+            StringBuilder statement = new StringBuilder("Select b.bname, b.addr, b.city, b.state_, b.bStars, b.reviewCount, b.reviewRatings, b.numCheckins, b.latitude, b.longitude, b.busid");
+            List<business> newbList = new List<business>();
+
+
+            if (Breakfast.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba1");
+                whereLine.Append(" ba1.busID = b.busId and ba1.aname = 'breakfast' and ba1.value_ = 'True' and");
+            }
+            if (Lunch.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba2");
+                whereLine.Append(" ba2.busID = b.busId and ba2.aname = 'lunch' and ba2.value_ = 'True' and");
+            }
+            if (Dinner.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba3");
+                whereLine.Append(" ba3.busID = b.busId and ba3.aname = 'dinner' and ba3.value_ = 'True' and");
+            }
+            if (Dessert.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba4");
+                whereLine.Append(" ba4.busID = b.busId and ba4.aname = 'dessert' and ba4.value_ = 'True' and");
+            }
+            if (Brunch.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba5");
+                whereLine.Append(" ba5.busID = b.busId and ba5.aname = 'brunch' and ba5.value_ = 'True' and");
+            }
+            if (LateNight.IsChecked == true)
+            {
+                fromLine.Append(", businessAttributes as ba6");
+                whereLine.Append(" ba6.busID = b.busId and ba6.aname = 'latenight' and ba6.value_ = 'True' and");
+            }
+
+            if (whereLine.ToString() == " WHERE")
+            {
+                newbList = bList;
+            }
+            else
+            {
+                whereLine.Remove(whereLine.Length - 4, 4);
+                whereLine.Append(";");
+                statement.Append(fromLine);
+                statement.Append(whereLine);
+                cmd.CommandText = statement.ToString();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        calDistance = Math.Round(DistanceTo(reader.GetDouble(8), reader.GetDouble(9), Convert.ToDouble(latitudeTextBox.Text), Convert.ToDouble(longitudeTextBox.Text)), 2);
+
+                        business temp = new business()
+                        {
+                            name = reader.GetString(0),
+                            address = reader.GetString(1),
+                            city = reader.GetString(2),
+                            state = reader.GetString(3),
+                            Stars = reader.GetDouble(4),
+                            reviewCount = reader.GetInt32(5),
+                            reviewRating = reader.GetDouble(6),
+                            numCheckins = reader.GetInt32(7),
+                            distance = calDistance,
+                            busID = reader.GetString(10)
+                        };
+
+                        //checks to see if the business is part of the already filtered list. Filtered using the other filters (categories, zip code ...etc).
+                        foreach (business b in bList)
+                        {
+                            if (b.busID == temp.busID)
+                            {
+                                newbList.Add(temp);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return newbList;
+        }
+
+
 
         private void currentUserTextBox_KeyDown(object sender, KeyEventArgs e)
         {

@@ -60,7 +60,7 @@ namespace Milestone1
 
         private string connectionString()
         {
-            return "Host=localhost; Username=postgres; Password=madera111; Database=yelpdb";
+            return "Host=localhost; Username=postgres; Password=Khan1992; Database=yelpdb";
         }
 
         public void addStates()
@@ -434,52 +434,54 @@ namespace Milestone1
                             }
                             // remove extra ,
                             sb.Remove(sb.Length - 1, 1);
-                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude,busid" +
+                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude,business.busid" +
                             " FROM business, businessCategories WHERE business.BusID=businessCategories.BusID AND city = '" +
                             cityListBox.SelectedItem.ToString() +
                             "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
                             "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() +
-                            "' AND cname in (" + sb + ") GROUP BY bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude,busid" +
-                            " HAVING count(*) = " + countCategories.ToString() + " ORDER BY bname; ";
+                            "' AND cname in (" + sb + ") GROUP BY bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude,business.busid" +
+                            " HAVING count(*) = " + countCategories.ToString() + " ORDER BY bname ";
+                            if (day != -1 && to != -1 && from != -1)
+                            {
+                                //remove the string from group key word to add to the query
+                                String temp = cmd.CommandText;
+                                int index = 0;
+                                index = temp.IndexOf("FROM");
+                                if (index > 0)
+                                {
+                                    temp = temp.Substring(0, index);
+                                }
+
+                                cmd.CommandText = temp + " FROM business, hours, businessCategories WHERE business.BusID = businessCategories.BusID AND business.BusID=hours.BusID"+
+                                                  " AND city = '" + cityListBox.SelectedItem.ToString() +
+                                                  "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
+                                                  "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() +
+                                                  "' AND dayofweek = '" + dowComboBox.SelectedItem.ToString() +
+                                                  "' AND opens <= '" + FromComboBox.SelectedIndex.ToString() +
+                                                  ":00' AND closed = '" + ToComboBox.SelectedIndex.ToString() +
+                                                  ":00' AND cname in (" + sb + ")";
+                                cmd.CommandText += " GROUP BY bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude,business.busid" +
+                                                   " HAVING count(*) = " + countCategories.ToString() + " ORDER BY bname";
+
+                            }
                         }
                         else if (CategoryListBox.SelectedIndex == -1)
                         {
-                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude,busid FROM business WHERE city = '" +
+                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude,business.busid" +
+                                " FROM business WHERE city = '" +
                                 cityListBox.SelectedItem.ToString() + "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
-                                "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() + "' ORDER BY bname; ";
+                                "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() + "' ORDER BY bname ";
                         }
                         else
                         {
-                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude,busid" +
+                            cmd.CommandText = "SELECT bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude,business.busid" +
                             " FROM business, businessCategories WHERE business.BusID=businessCategories.BusID AND city = '" +
                             cityListBox.SelectedItem.ToString() +
                             "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
                             "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() +
-                            "' AND cname = '" + CategoryListBox.SelectedItem.ToString() + "' ORDER BY bname; ";
+                            "' AND cname = '" + CategoryListBox.SelectedItem.ToString() + "' ORDER BY bname ";
                         }
-
-                        //if the day and times are provided
-                        if (day != -1 && to != -1 && from != -1)
-                        {
-                            //remove the string from group key word to add to the query
-                            String temp = cmd.CommandText;
-                            int index = 0;
-                            index = temp.IndexOf("GROUP");
-                            if (index > 0)
-                            {
-                                temp = temp.Substring(0, index);
-                            }
-
-                            cmd.CommandText = temp + " AND dayofweek = '" + dowComboBox.SelectedItem.ToString() + 
-                                                     "' AND opens <= '" + FromComboBox.SelectedIndex.ToString() +
-                                                     "' AND closed = '" + ToComboBox.SelectedIndex.ToString() + "'; ";
-                            if (SelectedCategories.Items.Count >= 1)
-                            {
-                                cmd.CommandText += "' AND cname in (" + sb + ") GROUP BY bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude,busid" +
-                                                   " HAVING count(*) = " + countCategories.ToString() + "; ORDER BY bname";
-                            }
-
-                        }
+                        
                         using (var reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())

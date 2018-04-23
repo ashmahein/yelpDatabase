@@ -60,7 +60,7 @@ namespace Milestone1
 
         private string connectionString()
         {
-            return "Host=localhost; Username=postgres; Password=Khan1992; Database=yelpdb";
+            return "Host=localhost; Username=postgres; Password=madera111; Database=yelpdb";
         }
 
         public void addStates()
@@ -98,7 +98,7 @@ namespace Milestone1
             DataGridTextColumn addressCol = new DataGridTextColumn();
             addressCol.Header = "Address";
             addressCol.Binding = new Binding("address");
-            addressCol.Width = 120;
+            addressCol.Width = 200;
             displayGrid.Columns.Add(addressCol);
 
             DataGridTextColumn cityCol = new DataGridTextColumn();
@@ -669,7 +669,6 @@ namespace Milestone1
             catch (InvalidOperationException) { }
         }
 
-        //The user will enter their location into the textboxes and when they click set location, the distance to the businesses will get updated.
         private void setLocationButton_Click(object sender, RoutedEventArgs e)
         {
                        
@@ -750,6 +749,47 @@ namespace Milestone1
                 brow_info = (business)displayGrid.SelectedItem;
             }
             catch { }
+        }
+
+        private void numOfBusinessButton_Click(object sender, RoutedEventArgs e)
+        {
+            NumberBusiness businessNumberWindow = new NumberBusiness();
+            List<KeyValuePair<int, int>> businessData = new List<KeyValuePair<int, int>>();
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionString()))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+
+                        /*SELECT COUNT(bname)
+                            FROM business
+                            WHERE state_ = 'AZ' AND city = 'Chandler'
+                            GROUP BY postalCode*/
+
+                        cmd.CommandText = "SELECT postalcode, COUNT(bname)" +
+                        " FROM business" +
+                        " WHERE state_ = '" + stateComboBox.SelectedItem.ToString() + "' AND city = '" + cityListBox.SelectedItem.ToString() + "'" +
+                        " GROUP BY postalCode";
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                KeyValuePair<int, int> data = new KeyValuePair<int, int>(reader.GetInt32(0), reader.GetInt32(1));
+                               
+                                businessData.Add(data);
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (NullReferenceException) { }
+            businessNumberWindow.businessNumber.DataContext = businessData;
+            businessNumberWindow.Show();
+            
         }
     }
 }

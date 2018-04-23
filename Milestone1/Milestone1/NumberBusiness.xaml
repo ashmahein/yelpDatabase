@@ -1,0 +1,17 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Milestone1"
+        xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" x:Class="Milestone1.NumberBusiness"
+        mc:Ignorable="d"
+        Title="NumberBusiness" Height="450" Width="800">
+    <Grid>
+
+        <chartingToolkit:Chart x:Name="businessNumber" HorizontalAlignment="Left" Height="410" VerticalAlignment="Top" Width="794" Margin="0,0,-0.4,0" Title="Number of Business per Zipcode">
+            <chartingToolkit:ColumnSeries HorizontalAlignment="Left" Height="338" VerticalAlignment="Top" Width="652" Title="# of Business" DependentValuePath="Value" IndependentValuePath="Key" ItemsSource="{Binding}" Margin="10,0,-28.4,-22.8"/>
+        </chartingToolkit:Chart>
+
+    </Grid>
+</Window>

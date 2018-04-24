@@ -1079,6 +1079,44 @@ namespace Milestone1
             businessNumberWindow.Show();
             
         }
+
+        private void showCheckinButton_Click(object sender, RoutedEventArgs e)
+        {
+            CheckinChart checkinWindow = new CheckinChart();
+            List<KeyValuePair<String, int>> checkinData = new List<KeyValuePair<String, int>>();
+            var busid = brow_info.busID;
+
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionString()))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+
+                        cmd.CommandText = "SELECT dayOfWeek, (morning + afternoon + evening + night)" +
+                        " FROM checkin" +
+                        " WHERE busID = '" + busid + "'" +
+                        " ORDER BY dayOfWeek";
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                KeyValuePair<String, int> data = new KeyValuePair<String, int>(reader.GetString(0).ToString(), reader.GetInt32(1));
+
+                                checkinData.Add(data);
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (NullReferenceException) { }
+
+            checkinWindow.checkinBarChart.DataContext = checkinData;
+            checkinWindow.Show();
+        }
     }
 }
 

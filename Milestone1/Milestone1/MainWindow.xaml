@@ -116,7 +116,7 @@
                     </GroupBox>
                     <GroupBox Name="showGroupBox" HorizontalAlignment="Left" Margin="824,550,0,15" Width="192" BorderThickness="1" FontSize="12">
                         <Grid Margin="0,0,-2,4">
-                            <Button Name="showCheckinButton" Content="Show Checkins" HorizontalAlignment="Center" Margin="10,10,10,0" VerticalAlignment="Top" RenderTransformOrigin="0.417,-0.008" FontSize="14" Width="162" Background="Aqua"/>
+                            <Button Name="showCheckinButton" Content="Show Checkins" HorizontalAlignment="Center" Margin="10,10,10,0" VerticalAlignment="Top" RenderTransformOrigin="0.417,-0.008" FontSize="14" Width="162" Background="Aqua" Click="showCheckinButton_Click"/>
                             <Button Name="showReviewButton" Content="Show Reviews" HorizontalAlignment="Center" Margin="10,39,10,0" VerticalAlignment="Top" RenderTransformOrigin="0.417,-0.008" FontSize="14" Width="162" Background="Aqua" Click="showReviewButton_Click"/>
                             <Button Name="numOfBusinessButton" Content="#of Business per Zipcode" HorizontalAlignment="Center" Margin="10,67,10,0" VerticalAlignment="Top" RenderTransformOrigin="0.417,-0.008" FontSize="14" Width="162" Background="Red" Click="numOfBusinessButton_Click"/>
                         </Grid>

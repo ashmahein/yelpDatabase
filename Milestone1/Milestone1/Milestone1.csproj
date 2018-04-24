@@ -61,6 +61,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BusinessReview.cs" />
+    <Compile Include="CheckinChart.xaml.cs">
+      <DependentUpon>CheckinChart.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Friends.cs" />
     <Compile Include="FriendReviews.cs" />
     <Compile Include="NumberBusiness.xaml.cs">
@@ -69,6 +72,10 @@
     <Compile Include="reviewWindow.xaml.cs">
       <DependentUpon>reviewWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="CheckinChart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

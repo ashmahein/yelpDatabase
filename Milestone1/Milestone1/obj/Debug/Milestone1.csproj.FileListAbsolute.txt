@@ -82,3 +82,5 @@ C:\Users\addis_000\Desktop\yelpDatabase\Milestone1\Milestone1\obj\Debug\Mileston
 C:\Users\addis_000\Desktop\yelpDatabase\Milestone1\Milestone1\obj\Debug\Milestone1.csproj.GenerateResource.Cache
 C:\Users\Ash\Documents\Milestone3\yelpDatabase\Milestone1\Milestone1\obj\Debug\CheckinChart.g.cs
 C:\Users\Ash\Documents\Milestone3\yelpDatabase\Milestone1\Milestone1\obj\Debug\CheckinChart.baml
+C:\Users\addis_000\Desktop\yelpDatabase\Milestone1\Milestone1\obj\Debug\CheckinChart.g.cs
+C:\Users\addis_000\Desktop\yelpDatabase\Milestone1\Milestone1\obj\Debug\CheckinChart.baml

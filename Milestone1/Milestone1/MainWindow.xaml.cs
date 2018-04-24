@@ -601,7 +601,7 @@ namespace Milestone1
             if (groupAtt.IsChecked == true)
             {
                 fromLine.Append(", businessAttributes as ba6");
-                whereLine.Append("ba6.busID = b.busId and ba6.aname = 'RestaurantsGoodForGroups' and ba6.value_ = 'True' and");
+                whereLine.Append(" ba6.busID = b.busId and ba6.aname = 'RestaurantsGoodForGroups' and ba6.value_ = 'True' and");
             }
             if (deliveryAtt.IsChecked == true)
             {
@@ -679,27 +679,24 @@ namespace Milestone1
             StringBuilder statement = new StringBuilder("Select b.bname, b.addr, b.city, b.state_, b.bStars, b.reviewCount, b.reviewRatings, b.numCheckins, b.latitude, b.longitude, b.busid");
             List<business> newbList = new List<business>();
 
-
+            fromLine.Append(", businessAttributes as ba1");
             if (lessThan10.IsChecked == true)
             {
-                fromLine.Append(", businessAttributes as ba1");
-                whereLine.Append(" ba1.busID = b.busId and ba1.aname = 'RestaurantsPriceRange2' and ba1.value_ = '1' and");
+                whereLine.Append(" ba1.busID = b.busId and ba1.aname = 'RestaurantsPriceRange2' and ba1.value_ = '1' or");
             }
             if (lessThan100.IsChecked == true)
             {
-                fromLine.Append(", businessAttributes as ba2");
-                whereLine.Append(" ba2.busID = b.busId and ba2.aname = 'RestaurantsPriceRange2' and ba2.value_ = '2' and");
+                whereLine.Append(" ba1.busID = b.busId and ba1.aname = 'RestaurantsPriceRange2' and ba1.value_ = '2' or");
             }
             if (lessThan1000.IsChecked == true)
             {
-                fromLine.Append(", businessAttributes as ba3");
-                whereLine.Append(" ba3.busID = b.busId and ba3.aname = 'RestaurantsPriceRange2' and ba3.value_ = '3' and");
+                whereLine.Append(" ba1.busID = b.busId and ba1.aname = 'RestaurantsPriceRange2' and ba1.value_ = '3' or");
             }
             if (lessThan10000.IsChecked == true)
             {
-                fromLine.Append(", businessAttributes as ba4");
-                whereLine.Append(" ba4.busID = b.busId and ba4.aname = 'RestaurantsPriceRange2' and ba4.value_ = '4' and");
+                whereLine.Append(" ba1.busID = b.busId and ba1.aname = 'RestaurantsPriceRange2' and ba1.value_ = '4' or");
             }
+
 
             if (whereLine.ToString() == " WHERE")
             {
@@ -707,7 +704,7 @@ namespace Milestone1
             }
             else
             {
-                whereLine.Remove(whereLine.Length - 4, 4);
+                whereLine.Remove(whereLine.Length - 2, 2);
                 whereLine.Append(";");
                 statement.Append(fromLine);
                 statement.Append(whereLine);

@@ -84,3 +84,9 @@ C:\Users\Ash\Documents\Milestone3\yelpDatabase\Milestone1\Milestone1\obj\Debug\C
 C:\Users\Ash\Documents\Milestone3\yelpDatabase\Milestone1\Milestone1\obj\Debug\CheckinChart.baml
 C:\Users\addis_000\Desktop\yelpDatabase\Milestone1\Milestone1\obj\Debug\CheckinChart.g.cs
 C:\Users\addis_000\Desktop\yelpDatabase\Milestone1\Milestone1\obj\Debug\CheckinChart.baml
+C:\Users\hasnain\Documents\Spring2018\Cpts451\repo\yelpDatabase\Milestone1\Milestone1\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.dll
+C:\Users\hasnain\Documents\Spring2018\Cpts451\repo\yelpDatabase\Milestone1\Milestone1\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.xml
+C:\Users\hasnain\Documents\Spring2018\Cpts451\repo\yelpDatabase\Milestone1\Milestone1\obj\Debug\CheckinChart.g.cs
+C:\Users\hasnain\Documents\Spring2018\Cpts451\repo\yelpDatabase\Milestone1\Milestone1\obj\Debug\NumberBusiness.g.cs
+C:\Users\hasnain\Documents\Spring2018\Cpts451\repo\yelpDatabase\Milestone1\Milestone1\obj\Debug\CheckinChart.baml
+C:\Users\hasnain\Documents\Spring2018\Cpts451\repo\yelpDatabase\Milestone1\Milestone1\obj\Debug\NumberBusiness.baml

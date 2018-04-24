@@ -60,7 +60,7 @@ namespace Milestone1
 
         private string connectionString()
         {
-            return "Host=localhost; Username=postgres; Password=madera111; Database=yelpdb";
+            return "Host=localhost; Username=postgres; Password=Khan1992; Database=yelpdb";
         }
 
         public void addStates()
@@ -98,7 +98,7 @@ namespace Milestone1
             DataGridTextColumn addressCol = new DataGridTextColumn();
             addressCol.Header = "Address";
             addressCol.Binding = new Binding("address");
-            addressCol.Width = 200;
+            addressCol.Width = 150;
             displayGrid.Columns.Add(addressCol);
 
             DataGridTextColumn cityCol = new DataGridTextColumn();
@@ -124,22 +124,25 @@ namespace Milestone1
             DataGridTextColumn reviewsCol = new DataGridTextColumn();
             reviewsCol.Header = "# of Reviews";
             reviewsCol.Binding = new Binding("reviewCount");
+            reviewsCol.Width = 50;
             displayGrid.Columns.Add(reviewsCol);
 
             DataGridTextColumn RatingCol = new DataGridTextColumn();
-            RatingCol.Header = "avg Review Rating";
+            RatingCol.Header = "Review Ratings";
             RatingCol.Binding = new Binding("reviewRating");
+            RatingCol.Width = 50;
             displayGrid.Columns.Add(RatingCol);
 
             DataGridTextColumn CheckinCol = new DataGridTextColumn();
             CheckinCol.Header = "Total Checkins";
             CheckinCol.Binding = new Binding("numCheckins");
+            CheckinCol.Width = 50;
             displayGrid.Columns.Add(CheckinCol);
 
             DataGridTextColumn idCol = new DataGridTextColumn();
             idCol.Header = "busID";
-            addressCol.Width = 10;
             idCol.Binding = new Binding("busID");
+            idCol.Width = 10;
             displayGrid.Columns.Add(idCol);
             #endregion
 
@@ -415,7 +418,8 @@ namespace Milestone1
             to = ToComboBox.SelectedIndex;
             from = FromComboBox.SelectedIndex;
             List<business> bList = new List<business>();
-
+            StringBuilder closedQuery = new StringBuilder();
+            
 
             StringBuilder sb = new StringBuilder();
             try
@@ -450,6 +454,8 @@ namespace Milestone1
                                 index = temp.IndexOf("FROM");
                                 if (index > 0)
                                     temp = temp.Substring(0, index);
+                                closedQuery.Append("SELECT distinct opens FROM business as b, Hours as h WHERE b.busID = h.busID AND opens <='"
+                                    + FromComboBox.SelectedIndex.ToString() + ":00' or opens = '" + ToComboBox.SelectedIndex.ToString() + ":00' ");
 
                                 cmd.CommandText = temp + " FROM business, hours, businessCategories WHERE business.BusID = businessCategories.BusID AND business.BusID=hours.BusID"+
                                                   " AND city = '" + cityListBox.SelectedItem.ToString() +
@@ -457,8 +463,8 @@ namespace Milestone1
                                                   "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() +
                                                   "' AND dayofweek = '" + dowComboBox.SelectedItem.ToString() +
                                                   "' AND opens <= '" + FromComboBox.SelectedIndex.ToString() +
-                                                  ":00' AND closed = '" + ToComboBox.SelectedIndex.ToString() +
-                                                  ":00' AND cname in (" + sb + ")";
+                                                  ":00' AND closed IN (" + closedQuery +
+                                                  ") AND cname in (" + sb + ")";
                                 cmd.CommandText += " GROUP BY bname,addr,city,state_,bStars,reviewCount,reviewRatings,numCheckins,latitude,longitude,business.busid" +
                                                    " HAVING count(*) = " + countCategories.ToString() + " ORDER BY bname";
 
@@ -478,6 +484,8 @@ namespace Milestone1
                                 index = temp.IndexOf("FROM");
                                 if (index > 0)
                                     temp = temp.Substring(0, index);
+                                closedQuery.Append("SELECT distinct opens FROM business as b, Hours as h WHERE b.busID = h.busID AND opens <='"
+                                    + FromComboBox.SelectedIndex.ToString() + ":00' or opens = '" + ToComboBox.SelectedIndex.ToString() + ":00' ");
 
                                 cmd.CommandText = temp + " FROM business, hours WHERE business.BusID=hours.BusID" +
                                                   " AND city = '" + cityListBox.SelectedItem.ToString() +
@@ -485,8 +493,8 @@ namespace Milestone1
                                                   "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() +
                                                   "' AND dayofweek = '" + dowComboBox.SelectedItem.ToString() +
                                                   "' AND opens <= '" + FromComboBox.SelectedIndex.ToString() +
-                                                  ":00' AND closed = '" + ToComboBox.SelectedIndex.ToString() +
-                                                  ":00' ORDER BY bname";
+                                                  ":00' AND closed IN (" + closedQuery +
+                                                  ") ORDER BY bname";
                             }
                         }
                         else
@@ -505,6 +513,8 @@ namespace Milestone1
                                 index = temp.IndexOf("FROM");
                                 if (index > 0)
                                     temp = temp.Substring(0, index);
+                                closedQuery.Append("SELECT distinct opens FROM business as b, Hours as h WHERE b.busID = h.busID AND opens <='"
+                                    + FromComboBox.SelectedIndex.ToString() + ":00' or opens = '" + ToComboBox.SelectedIndex.ToString() + ":00' ");
 
                                 cmd.CommandText = temp + " FROM business, hours, businessCategories WHERE business.BusID = businessCategories.BusID AND business.BusID=hours.BusID" +
                                                   " AND city = '" + cityListBox.SelectedItem.ToString() +
@@ -512,8 +522,8 @@ namespace Milestone1
                                                   "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() +
                                                   "' AND dayofweek = '" + dowComboBox.SelectedItem.ToString() +
                                                   "' AND opens <= '" + FromComboBox.SelectedIndex.ToString() +
-                                                  ":00' AND closed = '" + ToComboBox.SelectedIndex.ToString() +
-                                                  ":00' AND cname = '" + CategoryListBox.SelectedItem.ToString() + "' ORDER BY bname ";
+                                                  ":00' AND closed IN (" + closedQuery +
+                                                  ") AND cname = '" + CategoryListBox.SelectedItem.ToString() + "' ORDER BY bname ";
 
                             }
                         }
@@ -532,7 +542,7 @@ namespace Milestone1
                                     state = reader.GetString(3),
                                     Stars = reader.GetDouble(4),
                                     reviewCount = reader.GetInt32(5),
-                                    reviewRating = reader.GetDouble(6),
+                                    reviewRating = Math.Round(reader.GetDouble(6), 2),
                                     numCheckins = reader.GetInt32(7),
                                     distance = calDistance,
                                     busID = reader.GetString(10)
@@ -565,7 +575,7 @@ namespace Milestone1
             return count;
         }
 
-                private List<business> filterByAttributes(List<business> bList, NpgsqlCommand cmd)
+        private List<business> filterByAttributes(List<business> bList, NpgsqlCommand cmd)
         {
             StringBuilder fromLine = new StringBuilder(" FROM business as b");
             StringBuilder whereLine = new StringBuilder(" WHERE");
@@ -651,7 +661,7 @@ namespace Milestone1
                             state = reader.GetString(3),
                             Stars = reader.GetDouble(4),
                             reviewCount = reader.GetInt32(5),
-                            reviewRating = reader.GetDouble(6),
+                            reviewRating = Math.Round(reader.GetDouble(6),2),
                             numCheckins = reader.GetInt32(7),
                             distance = calDistance,
                             busID = reader.GetString(10)
@@ -724,7 +734,7 @@ namespace Milestone1
                             state = reader.GetString(3),
                             Stars = reader.GetDouble(4),
                             reviewCount = reader.GetInt32(5),
-                            reviewRating = reader.GetDouble(6),
+                            reviewRating = Math.Round(reader.GetDouble(6), 2),
                             numCheckins = reader.GetInt32(7),
                             distance = calDistance,
                             busID = reader.GetString(10)
@@ -810,7 +820,7 @@ namespace Milestone1
                             state = reader.GetString(3),
                             Stars = reader.GetDouble(4),
                             reviewCount = reader.GetInt32(5),
-                            reviewRating = reader.GetDouble(6),
+                            reviewRating = Math.Round(reader.GetDouble(6), 2),
                             numCheckins = reader.GetInt32(7),
                             distance = calDistance,
                             busID = reader.GetString(10)

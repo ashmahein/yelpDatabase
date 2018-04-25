@@ -428,12 +428,7 @@ namespace Milestone1
             from = FromComboBox.SelectedIndex;
             List<business> bList = new List<business>();
             StringBuilder closedQuery = new StringBuilder();
-
-            /*
-             * CREATE INDEX hIndex ON Hours(dayOfWeek)
-             * CREATE INDEX cityindex ON Business(city)
-             * CREATE INDEX cindex ON businessCategories(cname)
-             */
+            
 
             StringBuilder sb = new StringBuilder();
             try
@@ -1160,7 +1155,7 @@ namespace Milestone1
                             WHERE state_ = 'AZ' AND city = 'Chandler'
                             GROUP BY postalCode*/
 
-            cmd.CommandText = "SELECT postalcode, COUNT(bname)" +
+                        cmd.CommandText = "SELECT postalcode, COUNT(bname)" +
                         " FROM business" +
                         " WHERE state_ = '" + stateComboBox.SelectedItem.ToString() + "' AND city = '" + cityListBox.SelectedItem.ToString() + "'" +
                         " GROUP BY postalCode";

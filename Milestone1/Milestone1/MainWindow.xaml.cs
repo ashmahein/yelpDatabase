@@ -588,7 +588,7 @@ namespace Milestone1
         {
             StringBuilder fromLine = new StringBuilder(" FROM business as b");
             StringBuilder whereLine = new StringBuilder(" WHERE");
-            StringBuilder statement = new StringBuilder("Select b.bname, b.addr, b.city, b.state_, b.bStars, b.reviewCount, b.reviewRatings, b.numCheckins, b.latitude, b.longitude, b.busid");
+            StringBuilder statement = new StringBuilder("Select distinct b.bname, b.addr, b.city, b.state_, b.bStars, b.reviewCount, b.reviewRatings, b.numCheckins, b.latitude, b.longitude, b.busid");
             List<business> newbList = new List<business>();
 
 
@@ -695,7 +695,7 @@ namespace Milestone1
         {
             StringBuilder fromLine = new StringBuilder(" FROM business as b");
             StringBuilder whereLine = new StringBuilder(" WHERE");
-            StringBuilder statement = new StringBuilder("Select b.bname, b.addr, b.city, b.state_, b.bStars, b.reviewCount, b.reviewRatings, b.numCheckins, b.latitude, b.longitude, b.busid");
+            StringBuilder statement = new StringBuilder("Select distinct b.bname, b.addr, b.city, b.state_, b.bStars, b.reviewCount, b.reviewRatings, b.numCheckins, b.latitude, b.longitude, b.busid");
             List<business> newbList = new List<business>();
 
             fromLine.Append(", businessAttributes as ba1");
@@ -768,7 +768,88 @@ namespace Milestone1
         {
             StringBuilder fromLine = new StringBuilder(" FROM business as b");
             StringBuilder whereLine = new StringBuilder(" WHERE");
-            StringBuilder statement = new StringBuilder("Select b.bname, b.addr, b.city, b.state_, b.bStars, b.reviewCount, b.reviewRatings, b.numCheckins, b.latitude, b.longitude, b.busid");
+            StringBuilder statement = new StringBuilder("Select distinct b.bname, b.addr, b.city, b.state_, b.bStars, b.reviewCount, b.reviewRatings, b.numCheckins, b.latitude, b.longitude, b.busid");
+            List<business> newbList = new List<business>();
+
+            fromLine.Append(", businessAttributes as ba1");
+            if (Breakfast.IsChecked == true)
+            {
+                whereLine.Append(" ba1.busID = b.busId and ba1.aname = 'breakfast' and ba1.value_ = 'True' or");
+            }
+            if (Lunch.IsChecked == true)
+            {
+                whereLine.Append(" ba1.busID = b.busId and ba1.aname = 'lunch' and ba1.value_ = 'True' or");
+            }
+            if (Dinner.IsChecked == true)
+            {
+                whereLine.Append(" ba1.busID = b.busId and ba1.aname = 'dinner' and ba1.value_ = 'True' or");
+            }
+            if (Dessert.IsChecked == true)
+            {
+                whereLine.Append(" ba1.busID = b.busId and ba1.aname = 'dessert' and ba1.value_ = 'True' or");
+            }
+            if (Brunch.IsChecked == true)
+            {
+                whereLine.Append(" ba1.busID = b.busId and ba1.aname = 'brunch' and ba1.value_ = 'True' or");
+            }
+            if (LateNight.IsChecked == true)
+            {
+                whereLine.Append(" ba1.busID = b.busId and ba1.aname = 'latenight' and ba1.value_ = 'True' or");
+            }
+
+            if (whereLine.ToString() == " WHERE")
+            {
+                newbList = bList;
+            }
+            else
+            {
+                whereLine.Remove(whereLine.Length - 2, 2);
+                whereLine.Append(";");
+                statement.Append(fromLine);
+                statement.Append(whereLine);
+                cmd.CommandText = statement.ToString();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        calDistance = Math.Round(DistanceTo(reader.GetDouble(8), reader.GetDouble(9), Convert.ToDouble(latitudeTextBox.Text), Convert.ToDouble(longitudeTextBox.Text)), 2);
+
+                        business temp = new business()
+                        {
+                            name = reader.GetString(0),
+                            address = reader.GetString(1),
+                            city = reader.GetString(2),
+                            state = reader.GetString(3),
+                            Stars = reader.GetDouble(4),
+                            reviewCount = reader.GetInt32(5),
+                            reviewRating = reader.GetDouble(6),
+                            numCheckins = reader.GetInt32(7),
+                            distance = calDistance,
+                            busID = reader.GetString(10)
+                        };
+
+                        //checks to see if the business is part of the already filtered list. Filtered using the other filters (categories, zip code ...etc).
+                        foreach (business b in bList)
+                        {
+                            if (b.busID == temp.busID)
+                            {
+                                newbList.Add(temp);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return newbList;
+        }
+
+
+        private List<business> filterByMeals_And(List<business> bList, NpgsqlCommand cmd)
+        {
+            StringBuilder fromLine = new StringBuilder(" FROM business as b");
+            StringBuilder whereLine = new StringBuilder(" WHERE");
+            StringBuilder statement = new StringBuilder("Select distinct b.bname, b.addr, b.city, b.state_, b.bStars, b.reviewCount, b.reviewRatings, b.numCheckins, b.latitude, b.longitude, b.busid");
             List<business> newbList = new List<business>();
 
 
@@ -829,7 +910,7 @@ namespace Milestone1
                             state = reader.GetString(3),
                             Stars = reader.GetDouble(4),
                             reviewCount = reader.GetInt32(5),
-                            reviewRating = Math.Round(reader.GetDouble(6), 2),
+                            reviewRating = reader.GetDouble(6),
                             numCheckins = reader.GetInt32(7),
                             distance = calDistance,
                             busID = reader.GetString(10)
@@ -849,6 +930,7 @@ namespace Milestone1
 
             return newbList;
         }
+
 
 
 

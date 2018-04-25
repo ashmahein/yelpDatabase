@@ -527,7 +527,7 @@ namespace Milestone1
 
                             }
                         }
-
+                        cmd.CommandTimeout = 0;
                         using (var reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())

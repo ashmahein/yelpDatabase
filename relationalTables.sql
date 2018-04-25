@@ -100,5 +100,7 @@ CREATE TABLE BusinessAttributes(
     FOREIGN KEY (aname) REFERENCES Attributes
 );
 
-
-
+CREATE INDEX hIndex ON Hours(dayOfWeek);
+CREATE INDEX cityindex ON Business(city);
+CREATE INDEX cindex ON businessCategories(cname);
+CREATE INDEX attIndex on businessAttributes(aname);

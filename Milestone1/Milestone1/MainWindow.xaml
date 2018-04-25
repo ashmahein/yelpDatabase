@@ -111,7 +111,7 @@
                     </GroupBox>
                     <GroupBox Name="sortByGroupBox" Header="Sort Results By:" HorizontalAlignment="Left" Margin="824,481,0,130" Width="192" BorderThickness="1" FontSize="12">
                         <Grid Margin="0,0,-2,0">
-                            <ComboBox x:Name="sortByComboBox" HorizontalAlignment="Left" Height="32" Margin="10,0,0,0" VerticalAlignment="Top" Width="162" SelectionChanged="stateComboBox_SelectionChanged" FontSize="12"/>
+                            <ComboBox x:Name="sortByComboBox" HorizontalAlignment="Left" Height="32" Margin="10,0,0,0" VerticalAlignment="Top" Width="162" SelectionChanged="sortByComboBox_SelectionChanged" FontSize="12"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Name="showGroupBox" HorizontalAlignment="Left" Margin="824,550,0,15" Width="192" BorderThickness="1" FontSize="12">

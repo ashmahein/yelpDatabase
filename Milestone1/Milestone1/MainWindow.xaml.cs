@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Npgsql;
+using System.Reflection;
 
 namespace Milestone1
 {
@@ -94,6 +95,7 @@ namespace Milestone1
             businessNameCol.Binding = new Binding("name");
             businessNameCol.Width = 150;
             displayGrid.Columns.Add(businessNameCol);
+            sortByComboBox.Items.Add(businessNameCol.Header);
 
             DataGridTextColumn addressCol = new DataGridTextColumn();
             addressCol.Header = "Address";
@@ -115,29 +117,34 @@ namespace Milestone1
             distanceCol.Header = "Dist";
             distanceCol.Binding = new Binding("distance");
             displayGrid.Columns.Add(distanceCol);
+            sortByComboBox.Items.Add(distanceCol.Header);
 
             DataGridTextColumn starsCol = new DataGridTextColumn();
             starsCol.Header = "Stars";
             starsCol.Binding = new Binding("Stars");
             displayGrid.Columns.Add(starsCol);
+            sortByComboBox.Items.Add(starsCol.Header);
 
             DataGridTextColumn reviewsCol = new DataGridTextColumn();
             reviewsCol.Header = "# of Reviews";
             reviewsCol.Binding = new Binding("reviewCount");
             reviewsCol.Width = 50;
             displayGrid.Columns.Add(reviewsCol);
+            sortByComboBox.Items.Add(reviewsCol.Header);
 
             DataGridTextColumn RatingCol = new DataGridTextColumn();
             RatingCol.Header = "Review Ratings";
             RatingCol.Binding = new Binding("reviewRating");
             RatingCol.Width = 50;
             displayGrid.Columns.Add(RatingCol);
+            sortByComboBox.Items.Add(RatingCol.Header);
 
             DataGridTextColumn CheckinCol = new DataGridTextColumn();
             CheckinCol.Header = "Total Checkins";
             CheckinCol.Binding = new Binding("numCheckins");
             CheckinCol.Width = 50;
             displayGrid.Columns.Add(CheckinCol);
+            sortByComboBox.Items.Add(CheckinCol.Header);
 
             DataGridTextColumn idCol = new DataGridTextColumn();
             idCol.Header = "busID";
@@ -145,6 +152,8 @@ namespace Milestone1
             idCol.Width = 10;
             displayGrid.Columns.Add(idCol);
             #endregion
+
+            
 
             #region user friends
             //----------------------Friend data grid columns------------------//
@@ -1123,6 +1132,14 @@ namespace Milestone1
 
             checkinWindow.checkinBarChart.DataContext = checkinData;
             checkinWindow.Show();
+        }
+
+        private void sortByComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var index = displayGrid.Columns.Single(c => c.Header.ToString() == sortByComboBox.SelectedItem.ToString()).DisplayIndex;
+            var performSortMethod = typeof(DataGrid).GetMethod("PerformSort", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            performSortMethod?.Invoke(displayGrid, new[] { displayGrid.Columns[index] });
         }
     }
 }

@@ -39,7 +39,8 @@ Begin
 	 UPDATE business
      	SET reviewratings = 
         (SELECT AVG(stars) FROM reviewtable
-         WHERE busid = NEW.busid);
+         WHERE busid = NEW.busid)
+		Where busid = NEW.busid;
      RETURN NEW;
 END
 ' Language plpgsql;
@@ -54,7 +55,8 @@ Begin
 	UPDATE business
         SET reviewCount =
         (SELECT COUNT (*) FROM reviewtable
-        WHERE busid = NEW.busid);
+        WHERE busid = NEW.busid)
+		WHERE busid = NEW.busid;
     RETURN NEW;
 END
 ' Language plpgsql;

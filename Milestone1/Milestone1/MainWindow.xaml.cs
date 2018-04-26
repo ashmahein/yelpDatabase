@@ -654,7 +654,7 @@ namespace Milestone1
             if (wifiAtt.IsChecked == true)
             {
                 fromLine.Append(", businessAttributes as ba9");
-                whereLine.Append(" ba9.busID = b.busId and ba9.aname = 'WiFi' and ba9.value_ = 'True' and");
+                whereLine.Append(" ba9.busID = b.busId and ba9.aname = 'WiFi' and ba9.value_ = 'free' and");
             }
             if (bikeAtt.IsChecked == true)
             {

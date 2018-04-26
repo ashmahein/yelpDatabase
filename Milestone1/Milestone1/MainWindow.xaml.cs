@@ -28,21 +28,22 @@ namespace Milestone1
         private business brow_info { get; set; }
         //private Friends row_info { get; set; }
         private double calDistance { get; set; }
+        private int reviewRating = 0;
 
         public MainWindow()
         {
-            
+
             InitializeComponent();
             DOW = new List<string>(new String[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" });
             times = new List<string>(new String[] { "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00",
                                                    "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00",
                                                    "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00",
                                                    "21:00", "22:00", "23:00"});
-            foreach(var item in DOW)
+            foreach (var item in DOW)
             {
                 dowComboBox.Items.Add(item);
             }
-            foreach(var item in times)
+            foreach (var item in times)
             {
                 FromComboBox.Items.Add(item);
                 ToComboBox.Items.Add(item);
@@ -61,7 +62,7 @@ namespace Milestone1
 
         private string connectionString()
         {
-            return "Host=localhost; Username=postgres; Password=Khan1992; Database=yelpdb";
+            return "Host=localhost; Username=postgres; Password=; Database=postgres";
         }
 
         public void addStates()
@@ -153,7 +154,14 @@ namespace Milestone1
             displayGrid.Columns.Add(idCol);
             #endregion
 
-            
+            ratingComboBox.Items.Add(" ");
+            ratingComboBox.Items.Add("0");
+            ratingComboBox.Items.Add("1");
+            ratingComboBox.Items.Add("2");
+            ratingComboBox.Items.Add("3");
+            ratingComboBox.Items.Add("4");
+            ratingComboBox.Items.Add("5");
+
 
             #region user friends
             //----------------------Friend data grid columns------------------//
@@ -188,7 +196,7 @@ namespace Milestone1
             friendIDCol.Header = "Friend ID";
             friendIDCol.Binding = new Binding("userID");
             friendDataGrid.Columns.Add(friendIDCol);
-#endregion
+            #endregion
 
             #region friends review
             //--------------------Review Data Grid---------------//
@@ -299,9 +307,9 @@ namespace Milestone1
                     using (var cmd = new NpgsqlCommand())
                     {
                         cmd.Connection = connection;
-                        cmd.CommandText = "SELECT DISTINCT cname FROM businessCategories as bc,Business as b WHERE bc.busID=b.busID and"+
+                        cmd.CommandText = "SELECT DISTINCT cname FROM businessCategories as bc,Business as b WHERE bc.busID=b.busID and" +
                             " city = '" + cityListBox.SelectedItem.ToString() +
-                            "' AND state_ = '" + stateComboBox.SelectedItem.ToString() + 
+                            "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
                             "' AND b.postalcode='" + zipCodeListBox.SelectedItem.ToString() + "'; ";
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -428,7 +436,7 @@ namespace Milestone1
             from = FromComboBox.SelectedIndex;
             List<business> bList = new List<business>();
             StringBuilder closedQuery = new StringBuilder();
-            
+
 
             StringBuilder sb = new StringBuilder();
             try
@@ -466,7 +474,7 @@ namespace Milestone1
                                 closedQuery.Append("SELECT distinct opens FROM business as b, Hours as h WHERE b.busID = h.busID AND opens <='"
                                     + FromComboBox.SelectedIndex.ToString() + ":00' or opens = '" + ToComboBox.SelectedIndex.ToString() + ":00' ");
 
-                                cmd.CommandText = temp + " FROM business, hours, businessCategories WHERE business.BusID = businessCategories.BusID AND business.BusID=hours.BusID"+
+                                cmd.CommandText = temp + " FROM business, hours, businessCategories WHERE business.BusID = businessCategories.BusID AND business.BusID=hours.BusID" +
                                                   " AND city = '" + cityListBox.SelectedItem.ToString() +
                                                   "' AND state_ = '" + stateComboBox.SelectedItem.ToString() +
                                                   "' AND postalcode = '" + zipCodeListBox.SelectedItem.ToString() +
@@ -543,18 +551,29 @@ namespace Milestone1
                             {
                                 count++;
                                 calDistance = Math.Round(DistanceTo(reader.GetDouble(8), reader.GetDouble(9), Convert.ToDouble(latitudeTextBox.Text), Convert.ToDouble(longitudeTextBox.Text)), 2);
+                                string name = reader.GetString(0);
+                                string address = reader.GetString(1);
+                                string city = reader.GetString(2);
+                                string state = reader.GetString(3);
+                                double Stars = reader.GetDouble(4);
+                                int reviewCount = reader.GetInt32(5);
+                                double reviewRating = Math.Round(reader.GetDouble(6), 2);
+                                int numCheckins = reader.GetInt32(7);
+                                double distance = calDistance;
+                                string busID = reader.GetString(10);
+
                                 bList.Add(new business()
                                 {
-                                    name = reader.GetString(0),
-                                    address = reader.GetString(1),
-                                    city = reader.GetString(2),
-                                    state = reader.GetString(3),
-                                    Stars = reader.GetDouble(4),
-                                    reviewCount = reader.GetInt32(5),
-                                    reviewRating = Math.Round(reader.GetDouble(6), 2),
-                                    numCheckins = reader.GetInt32(7),
-                                    distance = calDistance,
-                                    busID = reader.GetString(10)
+                                    name = name,
+                                    address = address,
+                                    city = city,
+                                    state = state,
+                                    Stars = Stars,
+                                    reviewCount = reviewCount,
+                                    reviewRating = reviewRating,
+                                    numCheckins = numCheckins,
+                                    distance = distance,
+                                    busID = busID
                                 });
                             }
                         }
@@ -670,7 +689,7 @@ namespace Milestone1
                             state = reader.GetString(3),
                             Stars = reader.GetDouble(4),
                             reviewCount = reader.GetInt32(5),
-                            reviewRating = Math.Round(reader.GetDouble(6),2),
+                            reviewRating = Math.Round(reader.GetDouble(6), 2),
                             numCheckins = reader.GetInt32(7),
                             distance = calDistance,
                             busID = reader.GetString(10)
@@ -1051,13 +1070,13 @@ namespace Milestone1
                     connection.Close();
                 }
             }
-            catch (NullReferenceException){}
+            catch (NullReferenceException) { }
             catch (InvalidOperationException) { }
         }
 
         private void setLocationButton_Click(object sender, RoutedEventArgs e)
         {
-                       
+
         }
 
         public double DistanceTo(double lat1, double lon1, double lat2, double lon2, char unit = 'M')
@@ -1133,8 +1152,10 @@ namespace Milestone1
             try
             {
                 brow_info = (business)displayGrid.SelectedItem;
+                businessNameTextBox.Text = brow_info.name;
             }
             catch { }
+
         }
 
         private void numOfBusinessButton_Click(object sender, RoutedEventArgs e)
@@ -1164,7 +1185,7 @@ namespace Milestone1
                             while (reader.Read())
                             {
                                 KeyValuePair<int, int> data = new KeyValuePair<int, int>(reader.GetInt32(0), reader.GetInt32(1));
-                               
+
                                 businessData.Add(data);
                             }
                         }
@@ -1175,7 +1196,7 @@ namespace Milestone1
             catch (NullReferenceException) { }
             businessNumberWindow.businessNumber.DataContext = businessData;
             businessNumberWindow.Show();
-            
+
         }
 
         private void showCheckinButton_Click(object sender, RoutedEventArgs e)
@@ -1222,6 +1243,174 @@ namespace Milestone1
             var performSortMethod = typeof(DataGrid).GetMethod("PerformSort", BindingFlags.Instance | BindingFlags.NonPublic);
 
             performSortMethod?.Invoke(displayGrid, new[] { displayGrid.Columns[index] });
+        }
+
+        private void checkinButton_Click(object sender, RoutedEventArgs e)
+        {
+            //perfrom query to see if business exists
+            //if not insert business
+
+            DateTime now = DateTime.Today;
+            int curHour = 12;
+            Int32.TryParse(now.ToString("hh"), out curHour);
+            string day = now.DayOfWeek.ToString();
+            string AMPM = now.ToString("tt");
+
+            //moring = 6AM-12 PM
+            //afternoon = 12 -5 PM
+            //evening = 5-10 PM 
+            //night = 10PM - 6AM
+
+            string dayTime = "";
+            int morning = 0, afternoon = 0, evening = 0, night = 0;
+
+            if (curHour >= 6 && curHour <= 11 && AMPM == "AM")
+            {
+                dayTime = "morning";
+                morning = 1;
+            }
+            else if (curHour >= 1 && curHour < 5 && AMPM == "PM" || curHour == 12 && AMPM == "PM")
+            {
+                dayTime = "afternoon";
+                afternoon = 1;
+            }
+            else if (curHour > 5 && curHour < 10 && AMPM == "PM")
+            {
+                dayTime = "evening";
+                evening = 1;
+            }
+            else if (curHour >= 10 && curHour < 12 && AMPM == "PM" || curHour >= 1 && curHour < 6 && AMPM == "AM" || curHour ==  12 && AMPM == "AM")
+            {
+                dayTime = "night";
+                night = 1;
+            }
+
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionString()))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+
+                        if(hasCheckinOnDay(cmd, day)) //if business has checkin on current day then update else insert
+                        {
+                            cmd.CommandText = "Update Checkin Set " + dayTime + " = " + dayTime + " + 1 Where busId = '" + brow_info.busID + "' and dayOfWeek = '" + day + "';";
+                        }
+                        else
+                        {
+                            cmd.CommandText = "Insert into Checkin(busid, dayofweek, morning, afternoon, evening, night) values ('" +
+                                brow_info.busID + "','" + day + "'," + morning.ToString() + "," + afternoon.ToString() + "," + evening.ToString() + "," + night.ToString() + ");";
+                        }
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+
+                            }
+                        }
+
+                        connection.Close();
+                    }
+                }
+            }
+            catch (NullReferenceException) { }
+
+            //add checkin to checkin table
+        }
+
+        //runs query using busid and curDay(ie: Monday) to determine to insert or update checkin
+        public bool hasCheckinOnDay(NpgsqlCommand cmd, string curDay)
+        {
+            List<business> newbList = new List<business>();
+
+            cmd.CommandText = "Select distinct b.bname, b.addr, b.city, b.state_, b.bStars, b.reviewCount, b.reviewRatings," +
+                " b.numCheckins, b.latitude, b.longitude, b.busid " + "From business as b, checkin as c" + " Where b.busid = '" + brow_info.busID + "' and c.busid = '" + brow_info.busID + "' and c.dayOfWeek = '" + curDay + "';";
+
+            using (var reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    calDistance = Math.Round(DistanceTo(reader.GetDouble(8), reader.GetDouble(9), Convert.ToDouble(latitudeTextBox.Text), Convert.ToDouble(longitudeTextBox.Text)), 2);
+
+                    business temp = new business()
+                    {
+                        name = reader.GetString(0),
+                        address = reader.GetString(1),
+                        city = reader.GetString(2),
+                        state = reader.GetString(3),
+                        Stars = reader.GetDouble(4),
+                        reviewCount = reader.GetInt32(5),
+                        reviewRating = reader.GetDouble(6),
+                        numCheckins = reader.GetInt32(7),
+                        distance = calDistance,
+                        busID = reader.GetString(10)
+                    };
+
+                    newbList.Add(temp);
+                }
+            }
+
+            if(newbList.Count == 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private void addReviewButton_Click(object sender, RoutedEventArgs e)
+        {
+            //perform query to see if business exists
+            //if not insert business
+            Random n = new Random();
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(n.Next(0, 1000));
+            sb.Append(n.Next(0, 1000));
+            sb.Append(n.Next(0, 1000));
+
+            DateTime today = DateTime.Today;
+
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionString()))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+
+                        cmd.CommandText = "Insert Into reviewtable (reviewid, userid, busid, text, date_, cool , useful, funny, stars) Values (" + sb.ToString() + ",'" + userIdsListBox.SelectedItem.ToString()
+                        + "','" + brow_info.busID + "','" + reviewTextBox.Text.ToString() + "','" + today.ToString("d") + "', 0, 0, 0," + reviewRating.ToString() + ");";
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+
+                        }
+
+                        connection.Close();
+                    }
+                }
+            }
+            catch (NullReferenceException) { }
+
+
+            //add review to review table                   v
+        }
+
+        private void ratingComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ratingComboBox.SelectedItem.ToString() == " ")
+            {
+                reviewRating = 0;
+            }
+            else
+            {
+                Int32.TryParse(ratingComboBox.SelectedItem.ToString(), out reviewRating);
+            }
         }
     }
 }

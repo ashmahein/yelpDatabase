@@ -69,12 +69,12 @@
                     </GroupBox>
                     <GroupBox Name="selectBusinessGroupBox" Header="Select Businesses" HorizontalAlignment="Left" Margin="224,518,0,15" Width="595" BorderThickness="1">
                         <Grid>
-                            <TextBox HorizontalAlignment="Left" Height="28" Margin="10,0,0,0" TextWrapping="Wrap" Text="Business Name" VerticalAlignment="Top" Width="450" Background="LightBlue" FontSize="12"/>
-                            <TextBox HorizontalAlignment="Left" Height="71" Margin="10,33,0,0" TextWrapping="Wrap" Text="review text" VerticalAlignment="Top" Width="450" FontSize="12"/>
+                            <TextBox x:Name="businessNameTextBox" HorizontalAlignment="Left" Height="28" Margin="10,0,0,0" TextWrapping="Wrap" Text="Business Name" VerticalAlignment="Top" Width="450" Background="LightBlue" FontSize="12"/>
+                            <TextBox x:Name="reviewTextBox" HorizontalAlignment="Left" Height="71" Margin="10,33,0,0" TextWrapping="Wrap" Text="review text" VerticalAlignment="Top" Width="450" FontSize="12"/>
                             <Label x:Name="ratingLabel" Content="Rating:" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="53" FontSize="10" RenderTransformOrigin="-0.702,-0.75" Margin="465,24,0,0"/>
-                            <ComboBox x:Name="ratingComboBox" HorizontalAlignment="Left" Height="30" Margin="465,47,0,0" VerticalAlignment="Top" Width="108" FontSize="12"/>
-                            <Button Name="checkinButton" Content="Checkin" HorizontalAlignment="Left" Margin="465,-1,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.417,-0.008" FontSize="12" Width="108" Background="DodgerBlue"/>
-                            <Button Name="addReviewButton" Content="Add Review" HorizontalAlignment="Left" Margin="465,82,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.417,-0.008" FontSize="12" Width="108" Height="22" Background="DodgerBlue"/>
+                            <ComboBox x:Name="ratingComboBox" HorizontalAlignment="Left" Height="30" Margin="465,47,0,0" VerticalAlignment="Top" Width="108" FontSize="12" SelectionChanged="ratingComboBox_SelectionChanged"/>
+                            <Button Name="checkinButton" Content="Checkin" HorizontalAlignment="Left" Margin="465,-1,0,95" VerticalAlignment="Bottom" RenderTransformOrigin="0.417,-0.008" FontSize="12" Width="108" Background="DodgerBlue" Click="checkinButton_Click"/>
+                            <Button Name="addReviewButton" Content="Add Review" HorizontalAlignment="Left" Margin="465,82,0,10" RenderTransformOrigin="0.417,-0.008" FontSize="12" Width="108" Background="DodgerBlue" Click="addReviewButton_Click"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Name="priceFilterGroupBox" Header="Filter by Price" HorizontalAlignment="Left" Margin="824,10,0,582" Width="192" BorderThickness="1">

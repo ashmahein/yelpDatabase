@@ -29,6 +29,10 @@ AFTER INSERT ON Checkin
 FOR EACH ROW
 EXECUTE PROCEDURE increaseCheckIn();
 
+Create Trigger updateCheckinTrigger
+After update on checkin
+For each row
+Execute procedure increaseCheckinTrigger();
 
 CREATE OR REPLACE FUNCTION updateReviewRating() Returns Trigger AS'
 Begin
@@ -60,6 +64,23 @@ AFTER INSERT ON reviewtable
 FOR EACH ROW
 EXECUTE PROCEDURE updateReviewCount();
 
+Select *
+from reviewtable;
+
+select *
+from business
+where busid = 'qq3TGTiNVTDSPf9rHpizPw';
+
+Delete From reviewtable
+Where busid = 'qq3TGTiNVTDSPf9rHpizPw';
+
+
+update business
+set reviewratings = 0;
+
+Select *
+from usertable
+where uname = 'Tyler';
 --------------------------------------------------------
 
 SELECT SUM(morning) + SUM(afternoon) + SUM(evening) + SUM(night) 

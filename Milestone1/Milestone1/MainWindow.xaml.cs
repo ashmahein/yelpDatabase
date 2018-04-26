@@ -62,7 +62,7 @@ namespace Milestone1
 
         private string connectionString()
         {
-            return "Host=localhost; Username=postgres; Password=; Database=postgres";
+            return "Host=localhost; Username=postgres; Password=Kite12345!; Database=postgres";
         }
 
         public void addStates()
@@ -863,7 +863,6 @@ namespace Milestone1
             return newbList;
         }
 
-
         private List<business> filterByMeals_And(List<business> bList, NpgsqlCommand cmd)
         {
             StringBuilder fromLine = new StringBuilder(" FROM business as b");
@@ -949,9 +948,6 @@ namespace Milestone1
 
             return newbList;
         }
-
-
-
 
         private void currentUserTextBox_KeyDown(object sender, KeyEventArgs e)
         {

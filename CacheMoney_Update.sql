@@ -32,7 +32,7 @@ EXECUTE PROCEDURE increaseCheckIn();
 Create Trigger updateCheckinTrigger
 After update on checkin
 For each row
-Execute procedure increaseCheckinTrigger();
+Execute procedure increaseCheckIn();
 
 CREATE OR REPLACE FUNCTION updateReviewRating() Returns Trigger AS'
 Begin
@@ -63,32 +63,3 @@ CREATE TRIGGER reviewcountTrigger
 AFTER INSERT ON reviewtable
 FOR EACH ROW
 EXECUTE PROCEDURE updateReviewCount();
-
-Select *
-from reviewtable;
-
-select *
-from business
-where busid = 'qq3TGTiNVTDSPf9rHpizPw';
-
-Delete From reviewtable
-Where busid = 'qq3TGTiNVTDSPf9rHpizPw';
-
-
-update business
-set reviewratings = 0;
-
-Select *
-from usertable
-where uname = 'Tyler';
---------------------------------------------------------
-
-SELECT SUM(morning) + SUM(afternoon) + SUM(evening) + SUM(night) 
-FROM checkin 
-WHERE BusID ='0Zb-kM0JZ08WCBiCEHixSw';
-
-
-UPDATE checkin 
-SET afternoon = '3'
-WHERE BusID ='0Zb-kM0JZ08WCBiCEHixSw'  AND dayOfWeek='Saturday';
- 
